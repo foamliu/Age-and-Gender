@@ -29,30 +29,31 @@ def num_years(begin, end_year):
 
 
 def check(mat):
+    i = 10
     imdb = mat['imdb'][0][0]
     dob_list = imdb[0][0]
     print(dob_list)
-    dob = dob_list[0]
+    dob = dob_list[i]
     print('dob: ' + str(dob))
     dob = convert_matlab_datenum(dob)
     print('dob: ' + str(dob))
     photo_taken_list = imdb[1][0]
     print(photo_taken_list)
-    photo_taken = int(photo_taken_list[0])
+    photo_taken = int(photo_taken_list[i])
     print('photo_taken: ' + str(photo_taken))
     age = num_years(dob, photo_taken)
     print('age: ' + str(age))
     full_path_list = imdb[2][0]
     print(full_path_list)
-    full_path = os.path.join(image_folder, full_path_list[0][0])
+    full_path = os.path.join(image_folder, full_path_list[i][0])
     print('full_path: ' + str(full_path))
     gender_list = imdb[3][0]
     print(gender_list)
-    gender = int(gender_list[0])
+    gender = int(gender_list[i])
     print('gender: ' + str(gender))
     face_location_list = imdb[5][0]
     print(face_location_list)
-    face_location = face_location_list[0][0]
+    face_location = face_location_list[i][0]
     print('face_location: ' + str(face_location))
 
 

@@ -4,7 +4,7 @@ import tarfile
 def extract(filename):
     print('Extracting {}...'.format(filename))
     tar = tarfile.open(filename)
-    tar.extractall()
+    tar.extractall('data')
     tar.close()
 
 

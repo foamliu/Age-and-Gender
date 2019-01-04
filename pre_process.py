@@ -1,8 +1,10 @@
 import os
 import tarfile
+from datetime import datetime, timedelta
 
 import scipy.io
-from datetime import datetime, timedelta
+
+from config import *
 
 
 def extract(filename):
@@ -12,23 +14,46 @@ def extract(filename):
     tar.close()
 
 
+def convert_matlab_datenum(matlab_datenum):
+    part_1 = datetime.fromordinal(int(matlab_datenum))
+    part_2 = timedelta(days=int(matlab_datenum) % 1)
+    part_3 = timedelta(days=366)
+    python_datetime = part_1 + part_2 - part_3
+    return python_datetime
+
+
+def num_years(begin, end_year):
+    end = datetime(end_year, 6, 30)
+    num_years = int((end - begin).days / 365.2425)
+    return num_years
+
+
 def check(mat):
     imdb = mat['imdb'][0][0]
     dob_list = imdb[0][0]
     print(dob_list)
-    print(dob_list[0])
+    dob = dob_list[0]
+    print('dob: ' + str(dob))
+    dob = convert_matlab_datenum(dob)
+    print('dob: ' + str(dob))
     photo_taken_list = imdb[1][0]
     print(photo_taken_list)
-    print(photo_taken_list[0])
+    photo_taken = int(photo_taken_list[0])
+    print('photo_taken: ' + str(photo_taken))
+    age = num_years(dob, photo_taken)
+    print('age: ' + str(age))
     full_path_list = imdb[2][0]
     print(full_path_list)
-    print(full_path_list[0][0])
+    full_path = os.path.join(image_folder, full_path_list[0][0])
+    print('full_path: ' + str(full_path))
     gender_list = imdb[3][0]
     print(gender_list)
-    print(gender_list[0])
+    gender = int(gender_list[0])
+    print('gender: ' + str(gender))
     face_location_list = imdb[5][0]
     print(face_location_list)
-    print(face_location_list[0][0])
+    face_location = face_location_list[0][0]
+    print('face_location: ' + str(face_location))
 
 
 if __name__ == "__main__":

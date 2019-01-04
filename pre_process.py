@@ -30,6 +30,8 @@ def num_years(begin, end_year):
 
 def check(mat):
     i = 10
+    num_samples = len(mat['imdb'][0][0][0][0])
+    print('num_samples: ' + str(num_samples))
     imdb = mat['imdb'][0][0]
     dob_list = imdb[0][0]
     print(dob_list)

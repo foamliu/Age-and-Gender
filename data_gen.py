@@ -1,17 +1,18 @@
-from torch.utils.data import Dataset
-from datetime import datetime, timedelta
-import os
+import cv2 as cv
 import numpy as np
 import scipy.io
+from torch.utils.data import Dataset
+
 from config import *
+from utils import get_sample
 
 
-class CaptionDataset(Dataset):
+class AGDataset(Dataset):
     """
     A PyTorch Dataset class to be used in a PyTorch DataLoader to create batches.
     """
 
-    def __init__(self, split, transform=None):
+    def __init__(self, split):
         mat = scipy.io.loadmat('data/imdb/imdb.mat')
         imdb = mat['imdb'][0][0]
         num_samples = len(imdb[0][0])
@@ -19,49 +20,27 @@ class CaptionDataset(Dataset):
         samples = []
 
         for i in range(num_samples):
-            
+            sample = get_sample(imdb, i)
+            samples.append(sample)
 
-
-        self.num_samples = num_samples
+        self.samples = samples
 
     def __getitem__(self, i):
         # Remember, the Nth caption corresponds to the (N // captions_per_image)th image
         sample = self.samples[i]
-        path = os.path.join(image_folder, sample['image_id'])
+        full_path = sample['full_path']
         # Read images
-        img = imread(path)
-        if len(img.shape) == 2:
-            img = img[:, :, np.newaxis]
-            img = np.concatenate([img, img, img], axis=2)
-        img = imresize(img, (256, 256))
+        img = cv.imread(full_path)
+        img = cv.resize(img, (256, 256))
         img = img.transpose(2, 0, 1)
         assert img.shape == (3, 256, 256)
         assert np.max(img) <= 255
         img = torch.FloatTensor(img / 255.)
-        if self.transform is not None:
-            img = self.transform(img)
 
-        # Sample captions
-        captions = sample['caption']
-        # Sanity check
-        assert len(captions) == captions_per_image
-        c = captions[i % captions_per_image]
-        c = list(jieba.cut(c))
-        # Encode captions
-        enc_c = encode_caption(self.word_map, c)
+        age = sample['age']
+        gender = sample['gender']
 
-        caption = torch.LongTensor(enc_c)
-
-        caplen = torch.LongTensor([len(c) + 2])
-
-        if self.split is 'train':
-            return img, caption, caplen
-        else:
-            # For validation of testing, also return all 'captions_per_image' captions to find BLEU-4 score
-            all_captions = torch.LongTensor([encode_caption(self.word_map, list(jieba.cut(c))) for c in captions])
-            return img, caption, caplen, all_captions
+        return img, age, gender
 
     def __len__(self):
-        return self.num_samples
-
-
+        return len(self.samples)

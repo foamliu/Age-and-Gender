@@ -1,3 +1,4 @@
+import torch.nn.functional as F
 import torchvision
 from torch import nn
 from torchsummary import summary
@@ -14,16 +15,13 @@ class AGModel(nn.Module):
         # Remove linear and pool layers (since we're not doing classification)
         modules = list(resnet.children())[:-1]
         self.resnet = nn.Sequential(*modules)
-        # self.embedding = nn.Linear(feature_size, embedding_size)
-        # self.sigmoid = nn.Sigmoid()
-        self.fine_tune()
+        self.fc1 = nn.Linear(2048, feature_size)
 
     def forward(self, images):
-        out = self.resnet(images)
-        out = out.view(-1, feature_size)  # (batch_size, 2048)
-        # out = self.embedding(out)
-        # out = self.sigmoid(out)
-        return out
+        x = self.resnet(images)
+        x = x.view(-1, feature_size)  # (batch_size, 2048)
+        x = self.fc1(x)
+        return F.softmax(x, dim=1)
 
 
 if __name__ == "__main__":

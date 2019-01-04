@@ -1,3 +1,4 @@
+import math
 import os
 from datetime import datetime, timedelta
 
@@ -38,7 +39,10 @@ def get_sample(imdb, i):
     full_path = os.path.join(image_folder, full_path_list[i][0])
     sample['full_path'] = full_path
     gender_list = imdb[3][0]
-    gender = int(gender_list[i])
+    if math.isnan(gender_list[i]):
+        gender = 2
+    else:
+        gender = int(gender_list[i])
     sample['gender'] = gender
     face_location_list = imdb[5][0]
     face_location = face_location_list[i][0]

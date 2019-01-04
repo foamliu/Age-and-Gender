@@ -6,6 +6,7 @@ epochs = 10000
 patience = 10
 
 # Model parameters
+feature_size = 101
 dropout = 0.5
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets device for model and PyTorch tensors
 

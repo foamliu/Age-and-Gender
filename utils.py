@@ -25,29 +25,36 @@ def num_years(begin, end_year):
 
 
 def get_sample(imdb, i):
-    sample = dict()
-    dob_list = imdb[0][0]
-    dob = dob_list[i]
-    dob = convert_matlab_datenum(dob)
-    sample['dob'] = dob
-    photo_taken_list = imdb[1][0]
-    photo_taken = int(photo_taken_list[i])
-    sample['photo_taken'] = photo_taken
-    age = num_years(dob, photo_taken)
-    sample['age'] = age
-    full_path_list = imdb[2][0]
-    full_path = os.path.join(image_folder, full_path_list[i][0])
-    sample['full_path'] = full_path
-    gender_list = imdb[3][0]
-    if math.isnan(gender_list[i]):
-        gender = 2
-    else:
-        gender = int(gender_list[i])
-    sample['gender'] = gender
-    face_location_list = imdb[5][0]
-    face_location = face_location_list[i][0]
-    sample['face_location'] = face_location
-    return sample
+    try:
+        sample = dict()
+        dob_list = imdb[0][0]
+        dob = dob_list[i]
+        dob = convert_matlab_datenum(dob)
+        sample['dob'] = dob
+        photo_taken_list = imdb[1][0]
+        photo_taken = int(photo_taken_list[i])
+        sample['photo_taken'] = photo_taken
+        age = num_years(dob, photo_taken)
+        sample['age'] = age
+        full_path_list = imdb[2][0]
+        full_path = os.path.join(image_folder, full_path_list[i][0])
+        sample['full_path'] = full_path
+        gender_list = imdb[3][0]
+        if math.isnan(gender_list[i]):
+            gender = 2
+        else:
+            gender = int(gender_list[i])
+        sample['gender'] = gender
+        face_location_list = imdb[5][0]
+        face_location = face_location_list[i][0]
+        sample['face_location'] = face_location
+        return sample
+    except:
+        print('dob: ' + str(imdb[0][0][i]))
+        print('photo_taken: ' + str(imdb[1][0][i]))
+        print('full_path: ' + str(imdb[2][0][i][0]))
+        print('gender: ' + str(imdb[3][0][i]))
+        print('face_location: ' + str(imdb[5][0][i][0]))
 
 
 def clip_gradient(optimizer, grad_clip):

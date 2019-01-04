@@ -62,17 +62,14 @@ def main():
 
         # One epoch's training
         train(train_loader=train_loader,
-              encoder=encoder,
-              decoder=decoder,
+              model=model,
               criterion=criterion,
-              encoder_optimizer=encoder_optimizer,
-              decoder_optimizer=decoder_optimizer,
+              optimizer=optimizer,
               epoch=epoch)
 
         # One epoch's validation
         recent_bleu4 = validate(val_loader=val_loader,
-                                encoder=encoder,
-                                decoder=decoder,
+                                model=model,
                                 criterion=criterion)
 
         # Check if there was an improvement
@@ -85,8 +82,7 @@ def main():
             epochs_since_improvement = 0
 
         # Save checkpoint
-        save_checkpoint(epoch, epochs_since_improvement, encoder, decoder, encoder_optimizer,
-                        decoder_optimizer, recent_bleu4, is_best)
+        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, recent_bleu4, is_best)
 
 
 def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_optimizer, epoch):

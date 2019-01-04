@@ -19,7 +19,7 @@ class AGModel(nn.Module):
 
     def forward(self, images):
         x = self.resnet(images)
-        x = x.view(-1, feature_size)  # (batch_size, 2048)
+        x = x.view(-1, 2048)  # (batch_size, 2048)
         x = self.fc1(x)
         return F.softmax(x, dim=1)
 

@@ -57,9 +57,8 @@ def main():
         if epochs_since_improvement == 20:
             break
         if epochs_since_improvement > 0 and epochs_since_improvement % 8 == 0:
-            adjust_learning_rate(decoder_optimizer, 0.8)
-            if fine_tune_encoder:
-                adjust_learning_rate(encoder_optimizer, 0.8)
+            adjust_learning_rate(optimizer, 0.8)
+
 
         # One epoch's training
         train(train_loader=train_loader,

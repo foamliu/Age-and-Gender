@@ -4,6 +4,11 @@ from datetime import datetime, timedelta
 from config import *
 
 
+def ensure_folder(folder):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+
 def convert_matlab_datenum(matlab_datenum):
     part_1 = datetime.fromordinal(int(matlab_datenum))
     part_2 = timedelta(days=int(matlab_datenum) % 1)

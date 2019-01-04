@@ -3,7 +3,7 @@ import tarfile
 
 import scipy.io
 
-from utils import get_sample
+from utils import ensure_folder, get_sample
 
 
 def extract(filename):

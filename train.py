@@ -3,8 +3,6 @@ import time
 
 import torch.optim
 import torch.utils.data
-import torchvision.transforms as transforms
-from nltk.translate.bleu_score import corpus_bleu
 from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
 
@@ -29,8 +27,6 @@ def main():
     if checkpoint is None:
         model = AGModel()
         optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr)
-
-
     else:
         checkpoint = torch.load(checkpoint)
         start_epoch = checkpoint['epoch'] + 1
@@ -39,7 +35,7 @@ def main():
         optimizer = checkpoint['optimizer']
 
     # Move to GPU, if available
-    decoder = model.to(device)
+    model = model.to(device)
 
     # Loss function
     criterion = nn.CrossEntropyLoss().to(device)
@@ -58,7 +54,6 @@ def main():
             break
         if epochs_since_improvement > 0 and epochs_since_improvement % 8 == 0:
             adjust_learning_rate(optimizer, 0.8)
-
 
         # One epoch's training
         train(train_loader=train_loader,
@@ -85,20 +80,8 @@ def main():
         save_checkpoint(epoch, epochs_since_improvement, model, optimizer, recent_bleu4, is_best)
 
 
-def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_optimizer, epoch):
-    """
-    Performs one epoch's training.
-    :param train_loader: DataLoader for training data
-    :param encoder: encoder model
-    :param decoder: decoder model
-    :param criterion: loss layer
-    :param encoder_optimizer: optimizer to update encoder's weights (if fine-tuning)
-    :param decoder_optimizer: optimizer to update decoder's weights
-    :param epoch: epoch number
-    """
-
-    decoder.train()  # train mode (dropout and batchnorm is used)
-    encoder.train()
+def train(train_loader, model, criterion, optimizer, epoch):
+    model.train()  # train mode (dropout and batchnorm is used)
 
     batch_time = AverageMeter()  # forward prop. + back prop. time
     data_time = AverageMeter()  # data loading time
@@ -108,25 +91,16 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
     start = time.time()
 
     # Batches
-    for i, (imgs, caps, caplens) in enumerate(train_loader):
+    for i, (imgs, ages, genders) in enumerate(train_loader):
         data_time.update(time.time() - start)
 
         # Move to GPU, if available
         imgs = imgs.to(device)
-        caps = caps.to(device)
-        caplens = caplens.to(device)
+        ages = ages.to(device)
+        genders = genders.to(device)
 
         # Forward prop.
-        imgs = encoder(imgs)
-        scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
-
-        # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
-        targets = caps_sorted[:, 1:]
-
-        # Remove timesteps that we didn't decode at, or are pads
-        # pack_padded_sequence is an easy trick to do this
-        scores, _ = pack_padded_sequence(scores, decode_lengths, batch_first=True)
-        targets, _ = pack_padded_sequence(targets, decode_lengths, batch_first=True)
+        features = model(imgs)
 
         # Calculate loss
         loss = criterion(scores, targets)
@@ -135,21 +109,17 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
         loss += alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
 
         # Back prop.
-        decoder_optimizer.zero_grad()
-        if encoder_optimizer is not None:
-            encoder_optimizer.zero_grad()
+        optimizer.zero_grad()
+        if optimizer is not None:
+            optimizer.zero_grad()
         loss.backward()
 
         # Clip gradients
-        if grad_clip is not None:
-            clip_gradient(decoder_optimizer, grad_clip)
-            if encoder_optimizer is not None:
-                clip_gradient(encoder_optimizer, grad_clip)
+        if optimizer is not None:
+            clip_gradient(optimizer, grad_clip)
 
         # Update weights
-        decoder_optimizer.step()
-        if encoder_optimizer is not None:
-            encoder_optimizer.step()
+        optimizer.step()
 
         # Keep track of metrics
         top5 = accuracy(scores, targets, 5)
@@ -171,18 +141,8 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
                                                                           top5=top5accs))
 
 
-def validate(val_loader, encoder, decoder, criterion):
-    """
-    Performs one epoch's validation.
-    :param val_loader: DataLoader for validation data.
-    :param encoder: encoder model
-    :param decoder: decoder model
-    :param criterion: loss layer
-    :return: BLEU-4 score
-    """
-    decoder.eval()  # eval mode (no dropout or batchnorm)
-    if encoder is not None:
-        encoder.eval()
+def validate(val_loader, model, criterion):
+    model.eval()  # eval mode (no dropout or batchnorm)
 
     batch_time = AverageMeter()
     losses = AverageMeter()
@@ -202,8 +162,8 @@ def validate(val_loader, encoder, decoder, criterion):
         caplens = caplens.to(device)
 
         # Forward prop.
-        if encoder is not None:
-            imgs = encoder(imgs)
+        if model is not None:
+            imgs = model(imgs)
         scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
 
         # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
@@ -259,9 +219,6 @@ def validate(val_loader, encoder, decoder, criterion):
         hypotheses.extend(preds)
 
         assert len(references) == len(hypotheses)
-
-    # Calculate BLEU-4 scores
-    bleu4 = corpus_bleu(references, hypotheses, emulate_multibleu=True)
 
     print(
         '\n * LOSS - {loss.avg:.3f}, TOP-5 ACCURACY - {top5.avg:.3f}, BLEU-4 - {bleu}\n'.format(

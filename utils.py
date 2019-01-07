@@ -37,7 +37,7 @@ def get_sample(imdb, i):
         age = num_years(dob, photo_taken)
         sample['age'] = age
         full_path_list = imdb[2][0]
-        full_path = os.path.join(image_folder, full_path_list[i][0])
+        full_path = os.path.join(IMG_DIR, full_path_list[i][0])
         sample['full_path'] = full_path
         gender_list = imdb[3][0]
         if math.isnan(gender_list[i]):
@@ -50,12 +50,13 @@ def get_sample(imdb, i):
         sample['face_location'] = face_location
         return sample
     except:
-        print('i: ' + str(i))
-        print('dob: ' + str(imdb[0][0][i]))
-        print('photo_taken: ' + str(imdb[1][0][i]))
-        print('full_path: ' + str(imdb[2][0][i][0]))
-        print('gender: ' + str(imdb[3][0][i]))
-        print('face_location: ' + str(imdb[5][0][i][0]))
+        pass
+        # print('i: ' + str(i))
+        # print('dob: ' + str(imdb[0][0][i]))
+        # print('photo_taken: ' + str(imdb[1][0][i]))
+        # print('full_path: ' + str(imdb[2][0][i][0]))
+        # print('gender: ' + str(imdb[3][0][i]))
+        # print('face_location: ' + str(imdb[5][0][i][0]))
 
 
 def clip_gradient(optimizer, grad_clip):

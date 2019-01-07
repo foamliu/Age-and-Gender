@@ -1,10 +1,14 @@
+import datetime
 import os
 import tarfile
 
 import cv2 as cv
+import numpy as np
 import scipy.io
+import seaborn as sns
 from tqdm import tqdm
 
+from config import IMG_DIR
 from utils import get_sample
 
 
@@ -13,6 +17,15 @@ def extract(filename):
     tar = tarfile.open(filename)
     tar.extractall('data')
     tar.close()
+
+
+def reformat_date(mat_date):
+    dt = datetime.date.fromordinal(np.max([mat_date - 366, 1])).year
+    return dt
+
+
+def create_path(path):
+    return os.path.join(IMG_DIR, path[0])
 
 
 def check_one(imdb, i=10):
@@ -61,8 +74,52 @@ if __name__ == "__main__":
         extract('data/imdb_meta.tar')
 
     mat = scipy.io.loadmat('data/imdb/imdb.mat')
-    imdb = mat['imdb'][0][0]
-    num_samples = len(imdb[0][0])
-    print('num_samples: ' + str(num_samples))
-    check_one(imdb, 10)
-    check(imdb, num_samples)
+    imdb = mat['imdb'][0, 0]
+    data = [d[0] for d in imdb]
+    keys = ['dob',
+            'photo_taken',
+            'full_path',
+            'gender',
+            'name',
+            'face_location',
+            'face_score',
+            'second_face_score',
+            'celeb_names',
+            'celeb_id'
+            ]
+    imdb_dict = dict(zip(keys, np.asarray(data)))
+    imdb_dict['dob'] = [reformat_date(dob) for dob in imdb_dict['dob']]
+    imdb_dict['full_path'] = [create_path(path) for path in imdb_dict['full_path']]
+
+    # Add 'age' key to the dictionary
+    imdb_dict['age'] = imdb_dict['photo_taken'] - imdb_dict['dob']
+
+    print("Dictionary created...")
+
+    raw_path = imdb_dict['full_path']
+    raw_age = imdb_dict['age']
+    raw_gender = imdb_dict['gender']
+    raw_sface = imdb_dict['second_face_score']
+
+    age = []
+    gender = []
+    imgs = []
+    samples = []
+    current_age = np.zeros(101)
+    for i, sface in enumerate(raw_sface):
+        if np.isnan(sface) and raw_age[i] >= 0 and raw_age[i] <= 100 and not np.isnan(raw_gender[i]):
+            age_tmp = 0
+            if current_age[raw_age[i]] >= 5000:
+                continue
+            age.append(raw_age[i])
+            gender.append(raw_gender[i])
+            imgs.append(raw_path[i])
+            current_age[raw_age[i]] += 1
+
+    sns.distplot(age)
+    print("Age size: " + str(len(age)))
+
+    # num_samples = len(imdb[0][0])
+    # print('num_samples: ' + str(num_samples))
+    # check_one(imdb, 10)
+    # check(imdb, num_samples)

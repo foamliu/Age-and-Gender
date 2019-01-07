@@ -22,5 +22,6 @@ print_freq = 100  # print training/validation stats every __ batches
 checkpoint = None  # path to checkpoint, None if none
 
 # Data parameters
-data_folder = 'data'
-image_folder = 'data/imdb_crop'
+DATA_DIR = 'data'
+IMG_DIR = 'data/imdb_crop'
+

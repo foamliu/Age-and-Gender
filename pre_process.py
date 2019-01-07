@@ -35,20 +35,19 @@ def check(imdb, num_samples):
     samples = []
     for i in tqdm(range(num_samples)):
         sample = get_sample(imdb, i)
-        dob = sample['dob']
-        photo_taken = sample['photo_taken']
         age = sample['age']
         full_path = sample['full_path']
         gender = sample['gender']
         face_location = sample['face_location']
-        x1 = int(face_location[0])
-        y1 = int(face_location[1])
-        x2 = int(face_location[2])
-        y2 = int(face_location[3])
+        x1 = int(round(face_location[0]))
+        y1 = int(round(face_location[1]))
+        x2 = int(round(face_location[2]))
+        y2 = int(round(face_location[3]))
+        print(x1, y1, x2, y2)
         img = cv.imread(full_path)
         samples.append({'age': age, 'gender': gender})
         filename = os.path.join('data/temp', str(i) + '.jpg')
-        new_img = img[y1:y2, x1:x2]
+        new_img = img[y1:y2, x1:x2, :]
         cv.imwrite(filename, new_img)
 
 

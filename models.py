@@ -15,12 +15,13 @@ class AGModel(nn.Module):
         # Remove linear and pool layers (since we're not doing classification)
         modules = list(resnet.children())[:-1]
         self.resnet = nn.Sequential(*modules)
-        self.fc1 = nn.Linear(2048, feature_size)
+        self.fc1 = nn.Linear(2048, num_classes)
 
     def forward(self, images):
         x = self.resnet(images)
         x = x.view(-1, 2048)  # (batch_size, 2048)
         x = self.fc1(x)
+        print('x.size(): ' + str(x.size()))
         return F.softmax(x, dim=1)
 
 

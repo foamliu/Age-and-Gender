@@ -50,6 +50,7 @@ def get_sample(imdb, i):
         sample['face_location'] = face_location
         return sample
     except:
+        print('i: ' + str(i))
         print('dob: ' + str(imdb[0][0][i]))
         print('photo_taken: ' + str(imdb[1][0][i]))
         print('full_path: ' + str(imdb[2][0][i][0]))

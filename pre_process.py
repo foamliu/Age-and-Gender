@@ -43,8 +43,11 @@ def check(imdb, num_samples):
         y1 = int(round(face_location[1]))
         x2 = int(round(face_location[2]))
         y2 = int(round(face_location[3]))
+        print(full_path)
         print(x1, y1, x2, y2)
         img = cv.imread(full_path)
+        h, w = img.shape[:2]
+        print(h, w)
         samples.append({'age': age, 'gender': gender})
         filename = os.path.join('data/temp', str(i) + '.jpg')
         new_img = img[y1:y2, x1:x2, :]

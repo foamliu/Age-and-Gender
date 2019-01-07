@@ -18,13 +18,16 @@ class AGModel(nn.Module):
         self.fc1 = nn.Linear(2048, num_classes)
 
     def forward(self, images):
+        # print('images.size(): ' + str(images.size()))
         x = self.resnet(images)
+        # print('x.size(): ' + str(x.size()))
         x = x.view(-1, 2048)  # (batch_size, 2048)
+        # print('x.size(): ' + str(x.size()))
         x = self.fc1(x)
-        print('x.size(): ' + str(x.size()))
+        # print('x.size(): ' + str(x.size()))
         return F.softmax(x, dim=1)
 
 
 if __name__ == "__main__":
     model = AGModel().to(device)
-    summary(model, (3, 256, 256))
+    summary(model, (3, 224, 224))

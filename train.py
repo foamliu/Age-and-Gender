@@ -88,12 +88,12 @@ def train(train_loader, model, criterion, optimizer, epoch):
         ages = ages.to(device)
         # genders = genders.to(device)
         targets = ages
-        print('imgs.size(): ' + str(imgs.size()))
-        print('ages.size(): ' + str(ages.size()))
+        # print('imgs.size(): ' + str(imgs.size()))
+        # print('ages.size(): ' + str(ages.size()))
 
         # Forward prop.
         scores = model(imgs)
-        print('scores.size(): ' + str(scores.size()))
+        # print('scores.size(): ' + str(scores.size()))
 
         # Calculate loss
         loss = criterion(scores, targets)

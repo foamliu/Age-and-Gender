@@ -31,9 +31,9 @@ class AGDataset(Dataset):
         full_path = sample['full_path']
         # Read images
         img = cv.imread(full_path)
-        img = cv.resize(img, (256, 256))
+        img = cv.resize(img, (image_h, image_w))
         img = img.transpose(2, 0, 1)
-        assert img.shape == (3, 256, 256)
+        assert img.shape == (3, image_h, image_w)
         assert np.max(img) <= 255
         img = torch.FloatTensor(img / 255.)
 

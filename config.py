@@ -24,4 +24,4 @@ checkpoint = None  # path to checkpoint, None if none
 # Data parameters
 DATA_DIR = 'data'
 IMG_DIR = 'data/imdb_crop'
-
+pickle_file = DATA_DIR + '/' + 'imdb-gender-age101.pkl'

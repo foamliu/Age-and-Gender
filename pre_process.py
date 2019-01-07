@@ -1,14 +1,18 @@
 import datetime
 import os
+import pickle
 import tarfile
 
 import cv2 as cv
 import numpy as np
 import scipy.io
 import seaborn as sns
+
+sns.set(color_codes=True)
+from collections import Counter
 from tqdm import tqdm
 
-from config import IMG_DIR
+from config import IMG_DIR, DATA_DIR, pickle_file
 from utils import get_sample
 
 
@@ -114,10 +118,22 @@ if __name__ == "__main__":
             age.append(raw_age[i])
             gender.append(raw_gender[i])
             imgs.append(raw_path[i])
+            samples.append({'age': raw_age[i], 'gender': gender, 'full_path': raw_path[i]})
             current_age[raw_age[i]] += 1
 
     sns.distplot(age)
     print("Age size: " + str(len(age)))
+
+    counter = Counter(age)
+    print(counter)
+
+    try:
+        f = open(pickle_file, 'wb')
+        pickle.dump(samples, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+    except Exception as e:
+        print('Unable to save data to', pickle_file, ':', e)
+        raise
 
     # num_samples = len(imdb[0][0])
     # print('num_samples: ' + str(num_samples))

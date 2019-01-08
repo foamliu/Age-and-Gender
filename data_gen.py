@@ -50,6 +50,10 @@ if __name__ == "__main__":
         full_path = sample['full_path']
         age = sample['age']
         gender = sample['gender']
-        print(gender, age, full_path)
+        face_loc = sample['face_location']
+        print(gender, age, full_path, face_loc)
         img = cv.imread(full_path)
+        print(i)
+        print(img.shape)
+        img = img[face_loc[1]:face_loc[3], face_loc[0]:face_loc[2]]
         cv.imwrite('images/{}_img.jpg'.format(i), img)

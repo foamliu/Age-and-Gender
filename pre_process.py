@@ -6,13 +6,11 @@ import tarfile
 import cv2 as cv
 import numpy as np
 import scipy.io
-import seaborn as sns
-
-sns.set(color_codes=True)
+import matplotlib.pyplot as plt
 from collections import Counter
 from tqdm import tqdm
 
-from config import IMG_DIR, DATA_DIR, pickle_file
+from config import IMG_DIR, pickle_file
 from utils import get_sample
 
 
@@ -104,6 +102,7 @@ if __name__ == "__main__":
     raw_age = imdb_dict['age']
     raw_gender = imdb_dict['gender']
     raw_sface = imdb_dict['second_face_score']
+    raw_face_loc = imdb_dict['face_location']
 
     age = []
     gender = []
@@ -113,15 +112,21 @@ if __name__ == "__main__":
     for i, sface in enumerate(raw_sface):
         if np.isnan(sface) and raw_age[i] >= 0 and raw_age[i] <= 100 and not np.isnan(raw_gender[i]):
             age_tmp = 0
-            if current_age[raw_age[i]] >= 5000:
-                continue
+            # if current_age[raw_age[i]] >= 5000:
+            #    continue
             age.append(raw_age[i])
             gender.append(raw_gender[i])
             imgs.append(raw_path[i])
-            samples.append({'age': raw_age[i], 'gender': raw_gender[i], 'full_path': raw_path[i]})
+            samples.append({'age': raw_age[i], 'gender': raw_gender[i], 'full_path': raw_path[i],
+                            'face_location': np.round(raw_face_loc[i] / 1.451).astype(np.int)})
             current_age[raw_age[i]] += 1
 
-    sns.distplot(age)
+    fig, axs = plt.subplots(1, 2, sharey=True, tight_layout=True)
+    # We can set the number of bins with the `bins` kwarg
+    axs[0].hist(age, bins=101)
+    axs[1].hist(gender, bins=2)
+    plt.ylabel('some numbers')
+    plt.show()
     print("Age size: " + str(len(age)))
 
     counter = Counter(age)

@@ -115,7 +115,7 @@ if __name__ == "__main__":
             age.append(raw_age[i])
             gender.append(raw_gender[i])
             imgs.append(raw_path[i])
-            samples.append({'age': raw_age[i], 'gender': raw_gender[i], 'full_path': raw_path[i]})
+            samples.append({'age': int(raw_age[i]), 'gender': int(raw_gender[i]), 'full_path': raw_path[i]})
             current_age[raw_age[i]] += 1
 
     try:

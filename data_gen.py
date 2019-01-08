@@ -1,3 +1,4 @@
+import json
 import pickle
 import random
 
@@ -42,18 +43,21 @@ class AGDataset(Dataset):
 
 if __name__ == "__main__":
     with open(pickle_file, 'rb') as file:
-        samples = pickle.load(file)
+        data = pickle.load(file)
 
-    samples = random.sample(samples, 10)
+    samples = random.sample(data['samples'], 10)
 
+    sample_inputs = []
     for i, sample in enumerate(samples):
         full_path = sample['full_path']
         age = sample['age']
         gender = sample['gender']
-        face_loc = sample['face_location']
-        print(gender, age, full_path, face_loc)
+        print(gender, age, full_path)
         img = cv.imread(full_path)
-        print(i)
-        print(img.shape)
-        img = img[face_loc[1]:face_loc[3], face_loc[0]:face_loc[2]]
-        cv.imwrite('images/{}_img.jpg'.format(i), img)
+        img = cv.resize(img, (image_h, image_w))
+        filename = 'images/{}_img.jpg'.format(i)
+        cv.imwrite(filename, img)
+        sample_inputs.append({'i': i, 'gender': gender, 'age': age})
+
+    with open('sample_inputs.json', 'w') as file:
+        json.dump(sample_inputs, file, indent=4, ensure_ascii=False)

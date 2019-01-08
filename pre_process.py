@@ -3,7 +3,6 @@ import os
 import pickle
 import tarfile
 
-import cv2 as cv
 import numpy as np
 import scipy.io
 from PIL import Image
@@ -11,7 +10,6 @@ from tqdm import tqdm
 
 from config import IMG_DIR, pickle_file
 from mtcnn.detector import detect_faces
-from utils import get_sample
 
 
 def extract(filename):
@@ -28,45 +26,6 @@ def reformat_date(mat_date):
 
 def create_path(path):
     return os.path.join(IMG_DIR, path[0])
-
-
-def check_one(imdb, i=10):
-    sample = get_sample(imdb, i)
-    dob = sample['dob']
-    print('dob: ' + str(dob))
-    photo_taken = sample['photo_taken']
-    print('photo_taken: ' + str(photo_taken))
-    age = sample['age']
-    print('age: ' + str(age))
-    full_path = sample['full_path']
-    print('full_path: ' + str(full_path))
-    gender = sample['gender']
-    print('gender: ' + str(gender))
-    face_location = sample['face_location']
-    print('face_location: ' + str(face_location))
-
-
-def check(imdb, num_samples):
-    samples = []
-    for i in tqdm(range(num_samples)):
-        sample = get_sample(imdb, i)
-        age = sample['age']
-        full_path = sample['full_path']
-        gender = sample['gender']
-        face_location = sample['face_location']
-        x1 = int(round(face_location[0]))
-        y1 = int(round(face_location[1]))
-        x2 = int(round(face_location[2]))
-        y2 = int(round(face_location[3]))
-        print(full_path)
-        print(x1, y1, x2, y2)
-        img = cv.imread(full_path)
-        h, w = img.shape[:2]
-        print(h, w)
-        samples.append({'age': age, 'gender': gender})
-        filename = os.path.join('data/temp', str(i) + '.jpg')
-        new_img = img[y1:y2, x1:x2, :]
-        cv.imwrite(filename, new_img)
 
 
 def valid_face(full_path):
@@ -117,7 +76,7 @@ if __name__ == "__main__":
     imgs = []
     samples = []
     current_age = np.zeros(101)
-    for i, sface in enumerate(raw_sface):
+    for i, sface in tqdm(enumerate(raw_sface)):
         if np.isnan(sface) and raw_age[i] >= 0 and raw_age[i] <= 100 and not np.isnan(raw_gender[i]):
             age_tmp = 0
             if current_age[raw_age[i]] >= 5000:

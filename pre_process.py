@@ -3,14 +3,9 @@ import os
 import pickle
 import tarfile
 
-import seaborn as sns
-
-sns.set(color_codes=True)
 import cv2 as cv
 import numpy as np
 import scipy.io
-import matplotlib.pyplot as plt
-from collections import Counter
 from tqdm import tqdm
 
 from config import IMG_DIR, pickle_file
@@ -115,31 +110,23 @@ if __name__ == "__main__":
     for i, sface in enumerate(raw_sface):
         if np.isnan(sface) and raw_age[i] >= 0 and raw_age[i] <= 100 and not np.isnan(raw_gender[i]):
             age_tmp = 0
-            # if current_age[raw_age[i]] >= 5000:
-            #    continue
+            if current_age[raw_age[i]] >= 5000:
+                continue
             age.append(raw_age[i])
             gender.append(raw_gender[i])
             imgs.append(raw_path[i])
-            samples.append({'age': raw_age[i], 'gender': raw_gender[i], 'full_path': raw_path[i],
-                            'face_location': np.round(raw_face_loc[i] / 1.451).astype(np.int)})
+            samples.append({'age': raw_age[i], 'gender': raw_gender[i], 'full_path': raw_path[i]})
             current_age[raw_age[i]] += 1
-
-    sns.distplot(age, kde=True, rug=True)
-    plt.show()
-    print("Age size: " + str(len(age)))
-
-    # counter = Counter(age)
-    # print(counter)
 
     try:
         f = open(pickle_file, 'wb')
-        pickle.dump(samples, f, pickle.HIGHEST_PROTOCOL)
+        save = {
+            'age': age,
+            'gender': gender,
+            'samples': samples
+        }
+        pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
         f.close()
     except Exception as e:
         print('Unable to save data to', pickle_file, ':', e)
         raise
-
-    # num_samples = len(imdb[0][0])
-    # print('num_samples: ' + str(num_samples))
-    # check_one(imdb, 10)
-    # check(imdb, num_samples)

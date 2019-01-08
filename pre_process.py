@@ -3,6 +3,9 @@ import os
 import pickle
 import tarfile
 
+import seaborn as sns
+
+sns.set(color_codes=True)
 import cv2 as cv
 import numpy as np
 import scipy.io
@@ -121,16 +124,12 @@ if __name__ == "__main__":
                             'face_location': np.round(raw_face_loc[i] / 1.451).astype(np.int)})
             current_age[raw_age[i]] += 1
 
-    fig, axs = plt.subplots(1, 2, sharey=True, tight_layout=True)
-    # We can set the number of bins with the `bins` kwarg
-    axs[0].hist(age, bins=101)
-    axs[1].hist(gender, bins=2)
-    plt.ylabel('some numbers')
+    sns.distplot(age, kde=True, rug=True)
     plt.show()
     print("Age size: " + str(len(age)))
 
-    counter = Counter(age)
-    print(counter)
+    # counter = Counter(age)
+    # print(counter)
 
     try:
         f = open(pickle_file, 'wb')

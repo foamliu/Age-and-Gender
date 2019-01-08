@@ -29,12 +29,15 @@ def create_path(path):
 
 
 def is_valid_face(full_path):
-    img = Image.open(full_path).convert('RGB')
-    bounding_boxes, landmarks = detect_faces(img)
-    width, height = img.size
-    if len(bounding_boxes) > 0:
-        x1, y1, x2, y2 = bounding_boxes[0][0], bounding_boxes[0][1], bounding_boxes[0][2], bounding_boxes[0][3]
-        return (x2 - x1) > width / 2 and (y2 - y1) > height / 2
+    try:
+        img = Image.open(full_path).convert('RGB')
+        bounding_boxes, landmarks = detect_faces(img)
+        width, height = img.size
+        if len(bounding_boxes) > 0:
+            x1, y1, x2, y2 = bounding_boxes[0][0], bounding_boxes[0][1], bounding_boxes[0][2], bounding_boxes[0][3]
+            return (x2 - x1) > width / 2 and (y2 - y1) > height / 2
+    except Exception as err:
+        pass
     return False
 
 

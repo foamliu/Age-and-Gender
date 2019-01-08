@@ -35,8 +35,10 @@ def get_face_attributes(full_path):
         width, height = img.size
         if len(bounding_boxes) > 0:
             x1, y1, x2, y2 = bounding_boxes[0][0], bounding_boxes[0][1], bounding_boxes[0][2], bounding_boxes[0][3]
-            is_valid = (x2 - x1) > width / 2 and (y2 - y1) > height / 2
-            return is_valid, (x1, y1, x2, y2)
+            is_valid = (x2 - x1) > width / 10 and (y2 - y1) > height / 10
+            return is_valid, (int(round(x1)), int(round(y1)), int(round(x2)), int(round(y2)))
+    except KeyboardInterrupt:
+        raise
     except:
         pass
     return False, None
@@ -82,7 +84,7 @@ if __name__ == "__main__":
     imgs = []
     samples = []
     current_age = np.zeros(101)
-    for i in tqdm(range(len(raw_sface))):
+    for i in tqdm(range(len(raw_sface[:5000]))):
         sface = raw_sface[i]
         if np.isnan(sface) and raw_age[i] >= 0 and raw_age[i] <= 100 and not np.isnan(raw_gender[i]):
             is_valid, face_location = get_face_attributes(raw_path[i])

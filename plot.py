@@ -11,7 +11,7 @@ if __name__ == "__main__":
         data = pickle.load(file)
     age = data['age']
     gender = data['gender']
-    # sns.distplot(age, kde=True, rug=True)
-    sns.distplot(gender, kde=True, rug=True)
+    sns.distplot(age, kde=True, rug=True)
+    # sns.distplot(gender, kde=True, rug=True)
     plt.show()
     print("Age size: " + str(len(age)))

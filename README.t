@@ -25,8 +25,8 @@
 |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_img.jpg)| ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_img.jpg) |
 |$(result_2)|$(result_3)|
 |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_img.jpg) |
-|$(result_4|$(result_5)|
+|$(result_4)|$(result_5)|
 |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_img.jpg)| ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_img.jpg) |
 |$(result_6)|$(result_7)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_out.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_out.jpg) |
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_img.jpg) |
 |$(result_8)|$(result_9)|

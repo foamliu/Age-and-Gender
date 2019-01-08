@@ -25,8 +25,8 @@
 |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_img.jpg)| ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_img.jpg) |
 |性别：男, 年龄：48|性别：男, 年龄：28|
 |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_img.jpg) |
-|$(result_4|性别：女, 年龄：23|
+|性别：男, 年龄：39|性别：女, 年龄：23|
 |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_img.jpg)| ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_img.jpg) |
 |性别：女, 年龄：38|性别：女, 年龄：52|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_out.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_out.jpg) |
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_img.jpg) |
 |性别：男, 年龄：37|性别：女, 年龄：42|

@@ -28,17 +28,18 @@ def create_path(path):
     return os.path.join(IMG_DIR, path[0])
 
 
-def is_valid_face(full_path):
+def get_face_attributes(full_path):
     try:
         img = Image.open(full_path).convert('RGB')
         bounding_boxes, landmarks = detect_faces(img)
         width, height = img.size
         if len(bounding_boxes) > 0:
             x1, y1, x2, y2 = bounding_boxes[0][0], bounding_boxes[0][1], bounding_boxes[0][2], bounding_boxes[0][3]
-            return (x2 - x1) > width / 2 and (y2 - y1) > height / 2
-    except Exception as err:
+            is_valid = (x2 - x1) > width / 2 and (y2 - y1) > height / 2
+            return is_valid, (x1, y1, x2, y2)
+    except:
         pass
-    return False
+    return False, None
 
 
 if __name__ == "__main__":
@@ -81,17 +82,20 @@ if __name__ == "__main__":
     imgs = []
     samples = []
     current_age = np.zeros(101)
-    for i, sface in tqdm(enumerate(raw_sface)):
-        if np.isnan(sface) and raw_age[i] >= 0 and raw_age[i] <= 100 and not np.isnan(raw_gender[i]) and is_valid_face(
-                raw_path[i]):
-            age_tmp = 0
-            if current_age[raw_age[i]] >= 5000:
-                continue
-            age.append(raw_age[i])
-            gender.append(raw_gender[i])
-            imgs.append(raw_path[i])
-            samples.append({'age': int(raw_age[i]), 'gender': int(raw_gender[i]), 'full_path': raw_path[i]})
-            current_age[raw_age[i]] += 1
+    for i in tqdm(range(len(raw_sface))):
+        sface = raw_sface[i]
+        if np.isnan(sface) and raw_age[i] >= 0 and raw_age[i] <= 100 and not np.isnan(raw_gender[i]):
+            is_valid, face_location = get_face_attributes(raw_path[i])
+            if is_valid:
+                age_tmp = 0
+                if current_age[raw_age[i]] >= 5000:
+                    continue
+                age.append(raw_age[i])
+                gender.append(raw_gender[i])
+                imgs.append(raw_path[i])
+                samples.append({'age': int(raw_age[i]), 'gender': int(raw_gender[i]), 'full_path': raw_path[i],
+                                'face_location': face_location})
+                current_age[raw_age[i]] += 1
 
     try:
         f = open(pickle_file, 'wb')

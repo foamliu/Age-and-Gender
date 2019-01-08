@@ -6,9 +6,11 @@ import tarfile
 import cv2 as cv
 import numpy as np
 import scipy.io
+from PIL import Image
 from tqdm import tqdm
 
 from config import IMG_DIR, pickle_file
+from mtcnn.detector import detect_faces
 from utils import get_sample
 
 
@@ -65,6 +67,14 @@ def check(imdb, num_samples):
         filename = os.path.join('data/temp', str(i) + '.jpg')
         new_img = img[y1:y2, x1:x2, :]
         cv.imwrite(filename, new_img)
+
+
+def valid_face(full_path):
+    img = Image.open(full_path)
+    bounding_boxes, landmarks = detect_faces(img)
+    width, height = img.size
+    x1, y1, x2, y2 = bounding_boxes[0][0], bounding_boxes[0][1], bounding_boxes[0][2], bounding_boxes[0][3]
+    return len(bounding_boxes) > 0 and (x2 - x1) > width / 2 and (y2 - y1) > height / 2
 
 
 if __name__ == "__main__":

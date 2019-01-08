@@ -1,10 +1,11 @@
+import pickle
+import random
+
 import cv2 as cv
 import numpy as np
-import scipy.io
 from torch.utils.data import Dataset
 
 from config import *
-from utils import get_sample
 
 
 class AGDataset(Dataset):
@@ -13,15 +14,8 @@ class AGDataset(Dataset):
     """
 
     def __init__(self, split):
-        mat = scipy.io.loadmat('data/imdb/imdb.mat')
-        imdb = mat['imdb'][0][0]
-        num_samples = len(imdb[0][0])
-
-        samples = []
-
-        for i in range(num_samples):
-            sample = get_sample(imdb, i)
-            samples.append(sample)
+        with open(pickle_file, 'rb') as file:
+            samples = pickle.load(file)
 
         self.samples = samples
 
@@ -44,3 +38,18 @@ class AGDataset(Dataset):
 
     def __len__(self):
         return len(self.samples)
+
+
+if __name__ == "__main__":
+    with open(pickle_file, 'rb') as file:
+        samples = pickle.load(file)
+
+    samples = random.sample(samples, 10)
+
+    for i, sample in enumerate(samples):
+        full_path = sample['full_path']
+        age = sample['age']
+        gender = sample['gender']
+        print(gender, age, full_path)
+        img = cv.imread(full_path)
+        cv.imwrite('images/{}_img.jpg'.format(i), img)

@@ -4,11 +4,13 @@
 
 ## 数据集
 
-[IMDB](https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/) 数据集，460,723张图片。
+[IMDB-WIKI](https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/) 数据集，460,723张图片。
 
 ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/imdb-wiki-teaser.png)
 
-年龄分布：
+这里为简洁只使用 IMDB 数据集。
+
+### 年龄分布：
 
 ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/age.png)
 

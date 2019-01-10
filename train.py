@@ -95,15 +95,14 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
         inputs = inputs.to(device)
         age_true = age_true.to(device)
         gender_true = gender_true.to(device)
-        # print('imgs.size(): ' + str(imgs.size()))
-        # print('ages.size(): ' + str(ages.size()))
+        print('age_true.size(): ' + str(age_true.size()))
+        print('gender_true.size(): ' + str(gender_true.size()))
 
         # Forward prop.
         gender_out, age_out = model(inputs)
         _, gender_pred = torch.max(gender_out, 1)
         _, max_cls_pred_age = torch.max(age_out, 1)
         gender_true = gender_true.view(-1)
-        age_true = age_true.view(-1, age_cls_unit)
 
         # Calculate loss
         gender_loss = gender_criterion(gender_out, gender_true)
@@ -122,7 +121,7 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
         optimizer.step()
 
         # Keep track of metrics
-        gender_accuracy = accuracy(gender_out, gender_true, 5)
+        gender_accuracy = accuracy(gender_out, gender_true)
         losses.update(loss.item())
         gender_accs.update(gender_accuracy)
         batch_time.update(time.time() - start)
@@ -173,7 +172,6 @@ def validate(val_loader, model, criterion_info):
         _, gender_pred = torch.max(gender_out, 1)
         _, max_cls_pred_age = torch.max(age_out, 1)
         gender_true = gender_true.view(-1)
-        age_true = age_true.view(-1, age_cls_unit)
 
         # Calculate loss
         gender_loss = gender_criterion(gender_out, gender_true)
@@ -182,7 +180,7 @@ def validate(val_loader, model, criterion_info):
         loss = gender_loss + age_loss
 
         # Keep track of metrics
-        gender_accuracy = accuracy(gender_out, gender_true, 5)
+        gender_accuracy = accuracy(gender_out, gender_true)
         losses.update(loss.item())
         gender_accs.update(gender_accuracy)
         batch_time.update(time.time() - start)

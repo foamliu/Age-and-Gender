@@ -16,7 +16,7 @@ class AGModel(nn.Module):
         modules = list(resnet.children())[:-1]
         self.resnet = nn.Sequential(*modules)
         self.fc1 = nn.Linear(2048, 2048)
-        self.age_cls_pred = nn.Linear(2048, 101)
+        self.age_cls_pred = nn.Linear(2048, age_cls_unit)
 
         self.fc2 = nn.Linear(2048, 2048)
         self.gen_cls_pred = nn.Linear(2048, 2)

@@ -26,9 +26,9 @@ def main():
     model = model.to(device)
 
     # Loss function
-    age_criterion = nn.MSELoss().cuda()
+    age_criterion = nn.L1Loss().cuda()
     gender_criterion = nn.CrossEntropyLoss().cuda()
-    reduce_age_loss = 0.002
+    reduce_age_loss = 1
     criterion_info = (age_criterion, gender_criterion, reduce_age_loss)
 
     # Custom dataloaders

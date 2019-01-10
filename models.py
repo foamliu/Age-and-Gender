@@ -15,17 +15,23 @@ class AGModel(nn.Module):
         # Remove linear and pool layers (since we're not doing classification)
         modules = list(resnet.children())[:-1]
         self.resnet = nn.Sequential(*modules)
-        self.fc1 = nn.Linear(2048, num_classes)
+        self.fc1 = nn.Linear(2048, 2048)
+        self.age_cls_pred = nn.Linear(2048, 101)
+
+        self.fc2 = nn.Linear(2048, 2048)
+        self.gen_cls_pred = nn.Linear(2048, 2)
 
     def forward(self, images):
-        # print('images.size(): ' + str(images.size()))
         x = self.resnet(images)
-        # print('x.size(): ' + str(x.size()))
-        x = x.view(-1, 2048)  # (batch_size, 2048)
-        # print('x.size(): ' + str(x.size()))
-        x = self.fc1(x)
-        # print('x.size(): ' + str(x.size()))
-        return F.softmax(x, dim=1)
+        last_conv_out = x.view(-1, 2048)  # (batch_size, 2048)
+
+        age_pred = F.relu(self.fc1(last_conv_out))
+        age_pred = F.softmax(self.age_cls_pred(age_pred), 1)
+
+        gen_pred = F.relu(self.fc2(last_conv_out))
+        gen_pred = self.gen_cls_pred(gen_pred)
+
+        return age_pred, gen_pred
 
 
 if __name__ == "__main__":

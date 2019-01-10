@@ -10,7 +10,7 @@ from utils import *
 
 
 def main():
-    global best_bleu4, epochs_since_improvement, checkpoint, start_epoch
+    global best_accuracy, epochs_since_improvement, checkpoint, start_epoch
 
     # Initialize / load checkpoint
     if checkpoint is None:
@@ -52,13 +52,13 @@ def main():
               epoch=epoch)
 
         # One epoch's validation
-        recent_bleu4 = validate(val_loader=val_loader,
+        recent_accuracy = validate(val_loader=val_loader,
                                 model=model,
                                 criterion=criterion)
 
         # Check if there was an improvement
-        is_best = recent_bleu4 > best_bleu4
-        best_bleu4 = max(recent_bleu4, best_bleu4)
+        is_best = recent_accuracy > best_accuracy
+        best_accuracy = max(recent_accuracy, best_accuracy)
         if not is_best:
             epochs_since_improvement += 1
             print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
@@ -66,7 +66,7 @@ def main():
             epochs_since_improvement = 0
 
         # Save checkpoint
-        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, recent_bleu4, is_best)
+        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, recent_accuracy, is_best)
 
 
 def train(train_loader, model, criterion, optimizer, epoch):

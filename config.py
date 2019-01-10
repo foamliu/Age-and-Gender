@@ -9,6 +9,7 @@ patience = 10
 num_classes = 101
 dropout = 0.5
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets device for model and PyTorch tensors
+train_split = 0.95
 
 # Training parameters
 start_epoch = 0

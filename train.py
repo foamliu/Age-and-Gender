@@ -30,9 +30,11 @@ def main():
     criterion = nn.CrossEntropyLoss().to(device)
 
     # Custom dataloaders
-    train_loader = torch.utils.data.DataLoader(AGDataset('train'), batch_size=batch_size, shuffle=True,
+    train_dataset = AGDataset('train')
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                                                num_workers=workers, pin_memory=True)
-    val_loader = torch.utils.data.DataLoader(AGDataset('valid'), batch_size=batch_size, shuffle=True,
+    val_dataset = AGDataset('valid')
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True,
                                              num_workers=workers, pin_memory=True)
 
     # Epochs
@@ -50,11 +52,12 @@ def main():
               criterion=criterion,
               optimizer=optimizer,
               epoch=epoch)
+        train_dataset.shuffle()
 
         # One epoch's validation
         recent_accuracy = validate(val_loader=val_loader,
-                                model=model,
-                                criterion=criterion)
+                                   model=model,
+                                   criterion=criterion)
 
         # Check if there was an improvement
         is_best = recent_accuracy > best_accuracy

@@ -18,10 +18,17 @@ class AGDataset(Dataset):
         with open(pickle_file, 'rb') as file:
             samples = pickle.load(file)
 
+        num_samples = len(samples)
+        num_train = int(train_split * num_samples)
+
+        if split == 'train':
+            samples = samples[:num_train]
+        else:
+            samples = samples[num_train:]
+
         self.samples = samples
 
     def __getitem__(self, i):
-        # Remember, the Nth caption corresponds to the (N // captions_per_image)th image
         sample = self.samples[i]
         full_path = sample['full_path']
         # Read images
@@ -39,6 +46,9 @@ class AGDataset(Dataset):
 
     def __len__(self):
         return len(self.samples)
+
+    def shuffle(self):
+        np.random.shuffle(self.samples)
 
 
 if __name__ == "__main__":

@@ -112,7 +112,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
         optimizer.step()
 
         # Keep track of metrics
-        top5 = accuracy(scores, targets, 5)
+        top5 = accuracy(scores, targets, 1)
         losses.update(loss.item())
         top5accs.update(top5)
         batch_time.update(time.time() - start)
@@ -156,7 +156,7 @@ def validate(val_loader, model, criterion):
 
         # Keep track of metrics
         losses.update(loss.item())
-        top5 = accuracy(scores, targets, 5)
+        top5 = accuracy(scores, targets, 1)
         top5accs.update(top5)
         batch_time.update(time.time() - start)
 

@@ -10,7 +10,7 @@ num_classes = 2
 dropout = 0.5
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets device for model and PyTorch tensors
 train_split = 0.95
-age_cls_unit = 101
+age_num_classes = 101
 
 # Training parameters
 start_epoch = 0

@@ -9,8 +9,17 @@ from models import AGModel
 from utils import *
 
 
+def make_one_hot(labels, C):
+    labels = labels.view(-1, 1, 1, 1)
+    one_hot = torch.cuda.FloatTensor(labels.size(0), C, labels.size(2), labels.size(3)).zero_()
+    target = one_hot.scatter_(1, labels.data, 1)
+    target = target.view(-1, C)
+    return target
+
+
 def main():
-    global best_accuracy, epochs_since_improvement, checkpoint, start_epoch
+    global best_loss, epochs_since_improvement, checkpoint, start_epoch
+    best_loss = 100000
 
     # Initialize / load checkpoint
     if checkpoint is None:
@@ -29,7 +38,7 @@ def main():
     # Loss function
     age_criterion = nn.L1Loss().cuda()
     gender_criterion = nn.CrossEntropyLoss().cuda()
-    reduce_gen_loss = 0.01
+    reduce_gen_loss = 0.03
     criterion_info = (age_criterion, gender_criterion, reduce_gen_loss)
 
     # Custom dataloaders
@@ -58,13 +67,13 @@ def main():
         train_dataset.shuffle()
 
         # One epoch's validation
-        recent_accuracy = validate(val_loader=val_loader,
+        recent_loss = validate(val_loader=val_loader,
                                    model=model,
                                    criterion_info=criterion_info)
 
         # Check if there was an improvement
-        is_best = recent_accuracy > best_accuracy
-        best_accuracy = max(recent_accuracy, best_accuracy)
+        is_best = recent_loss < best_loss
+        best_loss = max(recent_loss, best_loss)
         if not is_best:
             epochs_since_improvement += 1
             print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
@@ -72,43 +81,41 @@ def main():
             epochs_since_improvement = 0
 
         # Save checkpoint
-        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, recent_accuracy, is_best)
+        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
 
 
 def train(train_loader, model, criterion_info, optimizer, epoch):
     model.train()  # train mode (dropout and batchnorm is used)
 
-    batch_time = AverageMeter()  # forward prop. + back prop. time
-    data_time = AverageMeter()  # data loading time
-    losses = AverageMeter()  # loss (per word decoded)
-    gender_accs = AverageMeter()  # top5 accuracy
+    losses = AverageMeter()
+    gen_losses = AverageMeter()
+    age_losses = AverageMeter()
+    gender_accs = AverageMeter()  # gender accuracy
 
     age_criterion, gender_criterion, reduce_gen_loss = criterion_info
 
-    start = time.time()
-
     # Batches
-    for i, (inputs, age_true, gender_true) in enumerate(train_loader):
-        data_time.update(time.time() - start)
-
+    for i, (inputs, age_labels, gender_true) in enumerate(train_loader):
         # Move to GPU, if available
         inputs = inputs.to(device)
-        age_true = age_true.to(device)
+        age_labels = age_labels.to(device)
+        age_true = make_one_hot(age_labels, age_num_classes)
         gender_true = gender_true.to(device)
-        print('age_true.size(): ' + str(age_true.size()))
-        print('gender_true.size(): ' + str(gender_true.size()))
+        # print('age_true.size(): ' + str(age_true.size()))
+        # print('gender_true.size(): ' + str(gender_true.size()))
 
         # Forward prop.
-        gender_out, age_out = model(inputs)
+        age_out, gender_out = model(inputs)
+        # print('age_out.size(): ' + str(age_out.size()))
         _, gender_pred = torch.max(gender_out, 1)
-        _, max_cls_pred_age = torch.max(age_out, 1)
+        _, age_pred = torch.max(age_out, 1)
         gender_true = gender_true.view(-1)
 
         # Calculate loss
-        gender_loss = gender_criterion(gender_out, gender_true)
-        age_loss = age_criterion(age_out, age_true)
-        gender_loss *= reduce_gen_loss
-        loss = gender_loss + age_loss
+        gen_loss = gender_criterion(gender_out, gender_true)
+        age_loss = age_criterion(age_pred, age_labels)
+        gen_loss *= reduce_gen_loss
+        loss = gen_loss + age_loss
 
         # Back prop.
         optimizer.zero_grad()
@@ -123,26 +130,20 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
         # Keep track of metrics
         gender_accuracy = accuracy(gender_out, gender_true)
         losses.update(loss.item())
+        gen_losses.update(gen_loss.item())
+        age_losses.update(age_loss.item())
         gender_accs.update(gender_accuracy)
-        batch_time.update(time.time() - start)
-
-        start = time.time()
 
         # Print status
         if i % print_freq == 0:
             print('Epoch: [{0}][{1}/{2}]\t'
-                  'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Data Load Time {data_time.val:.3f} ({data_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Gender Loss {gender_loss.val:.4f} ({gender_loss.avg:.4f})\t'
+                  'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
                   'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                   'Gender Accuracy {gender_accs.val:.3f} ({gender_accs.avg:.3f})'.format(epoch, i, len(train_loader),
-                                                                                         batch_time=batch_time,
-                                                                                         data_time=data_time,
                                                                                          loss=losses,
-                                                                                         gender_loss=gender_loss,
-                                                                                         age_loss=age_loss,
+                                                                                         gen_loss=gen_losses,
+                                                                                         age_loss=age_losses,
                                                                                          gender_accs=gender_accs))
 
 
@@ -152,18 +153,24 @@ def validate(val_loader, model, criterion_info):
     batch_time = AverageMeter()
     data_time = AverageMeter()  # data loading time
     losses = AverageMeter()
-    gender_accs = AverageMeter()
+    gen_losses = AverageMeter()
+    age_losses = AverageMeter()
+    gender_accs = AverageMeter()  # gender accuracy
 
     age_criterion, gender_criterion, reduce_gen_loss = criterion_info
 
     start = time.time()
 
     # Batches
-    for i, (inputs, age_true, gender_true) in enumerate(val_loader):
+    for i, (inputs, age_labels, gender_true) in enumerate(val_loader):
         data_time.update(time.time() - start)
 
-        # Move to device, if available
+        batch_size = age_labels.size()[0]
+
+        # Move to GPU, if available
         inputs = inputs.to(device)
+        age_true = torch.zeros(batch_size, age_num_classes)
+        age_true.scatter_(1, age_labels, 1)
         age_true = age_true.to(device)
         gender_true = gender_true.to(device)
 
@@ -174,32 +181,29 @@ def validate(val_loader, model, criterion_info):
         gender_true = gender_true.view(-1)
 
         # Calculate loss
-        gender_loss = gender_criterion(gender_out, gender_true)
+        gen_loss = gender_criterion(gender_out, gender_true)
         age_loss = age_criterion(age_out, age_true)
-        gender_loss *= reduce_gen_loss
-        loss = gender_loss + age_loss
+        gen_loss *= reduce_gen_loss
+        loss = gen_loss + age_loss
 
         # Keep track of metrics
         gender_accuracy = accuracy(gender_out, gender_true)
         losses.update(loss.item())
+        gen_losses.update(gen_loss.item())
+        age_losses.update(age_loss.item())
         gender_accs.update(gender_accuracy)
         batch_time.update(time.time() - start)
 
         start = time.time()
 
         if i % print_freq == 0:
-            print('Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Data Load Time {data_time.val:.3f} ({data_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+            print('Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                   'Gender Loss {gender_loss.val:.4f} ({gender_loss.avg:.4f})\t'
                   'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                   'Gender Accuracy {gender_accs.val:.3f} ({gender_accs.avg:.3f})'.format(i, len(val_loader),
-                                                                                         batch_time=batch_time,
-                                                                                         data_time=data_time,
                                                                                          loss=losses,
-                                                                                         gender_loss=gender_loss,
-                                                                                         age_loss=age_loss,
+                                                                                         gender_loss=gen_losses,
+                                                                                         age_loss=age_losses,
                                                                                          gender_accs=gender_accs))
 
     return losses.avg

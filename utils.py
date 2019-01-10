@@ -71,10 +71,10 @@ def clip_gradient(optimizer, grad_clip):
                 param.grad.data.clamp_(-grad_clip, grad_clip)
 
 
-def save_checkpoint(epoch, epochs_since_improvement, model, optimizer, bleu4, is_best):
+def save_checkpoint(epoch, epochs_since_improvement, model, optimizer, loss, is_best):
     state = {'epoch': epoch,
              'epochs_since_improvement': epochs_since_improvement,
-             'bleu-4': bleu4,
+             'loss': loss,
              'model': model,
              'optimizer': optimizer}
     filename = 'checkpoint_' + '.pth.tar'

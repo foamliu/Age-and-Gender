@@ -16,22 +16,22 @@ class AGModel(nn.Module):
         modules = list(resnet.children())[:-1]
         self.resnet = nn.Sequential(*modules)
         self.fc1 = nn.Linear(2048, 2048)
-        self.age_cls_pred = nn.Linear(2048, age_cls_unit)
+        self.age_pred = nn.Linear(2048, age_num_classes)
 
         self.fc2 = nn.Linear(2048, 2048)
-        self.gen_cls_pred = nn.Linear(2048, 2)
+        self.gen_pred = nn.Linear(2048, 2)
 
     def forward(self, images):
         x = self.resnet(images)
         last_conv_out = x.view(-1, 2048)  # (batch_size, 2048)
 
-        age_pred = F.relu(self.fc1(last_conv_out))
-        age_pred = F.softmax(self.age_cls_pred(age_pred), 1)
+        age_out = F.relu(self.fc1(last_conv_out))
+        age_out = F.softmax(self.age_pred(age_out), 1)
 
-        gen_pred = F.relu(self.fc2(last_conv_out))
-        gen_pred = self.gen_cls_pred(gen_pred)
+        gen_out = F.relu(self.fc2(last_conv_out))
+        gen_out = self.gen_pred(gen_out)
 
-        return age_pred, gen_pred
+        return age_out, gen_out
 
 
 if __name__ == "__main__":

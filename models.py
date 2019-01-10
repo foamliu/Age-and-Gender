@@ -10,7 +10,7 @@ class AGModel(nn.Module):
     def __init__(self):
         super(AGModel, self).__init__()
 
-        resnet = torchvision.models.resnet101(pretrained=True)  # pretrained ImageNet ResNet-101
+        resnet = torchvision.models.resnet50(pretrained=True)
 
         # Remove linear and pool layers (since we're not doing classification)
         modules = list(resnet.children())[:-1]

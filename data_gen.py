@@ -16,7 +16,9 @@ class AGDataset(Dataset):
 
     def __init__(self, split):
         with open(pickle_file, 'rb') as file:
-            samples = pickle.load(file)
+            data = pickle.load(file)
+
+        samples = data['samples']
 
         num_samples = len(samples)
         num_train = int(train_split * num_samples)

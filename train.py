@@ -88,9 +88,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         # Move to GPU, if available
         imgs = imgs.to(device)
-        ages = ages.to(device)
-        # genders = genders.to(device)
-        targets = ages
+        # ages = ages.to(device)
+        genders = genders.to(device)
+        targets = genders
         # print('imgs.size(): ' + str(imgs.size()))
         # print('ages.size(): ' + str(ages.size()))
 
@@ -144,9 +144,9 @@ def validate(val_loader, model, criterion):
     for i, (imgs, ages, genders) in enumerate(val_loader):
         # Move to device, if available
         imgs = imgs.to(device)
-        ages = ages.to(device)
-        # genders = genders.to(device)
-        targets = ages
+        # ages = ages.to(device)
+        genders = genders.to(device)
+        targets = genders
 
         # Forward prop.
         scores = model(imgs)

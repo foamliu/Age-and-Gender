@@ -37,7 +37,8 @@ class AgeGenDataset(Dataset):
         # loc = sample['face_location']
         # x1, y1, x2, y2 = loc[0], loc[1], loc[2], loc[3]
         # img = img[y1:y2, x1:x2]
-        img = cv.resize(img, (image_h, image_w))
+        img = cv.resize(img, (image_w, image_h))
+        # print('img.shape: ' + str(img.shape))
         img = img.transpose(2, 0, 1)
         assert img.shape == (3, image_h, image_w)
         assert np.max(img) <= 255
@@ -69,7 +70,7 @@ if __name__ == "__main__":
         print(gender, age, full_path)
         img = cv.imread(full_path)
         img = img[y1:y2, x1:x2]
-        img = cv.resize(img, (image_h, image_w))
+        img = cv.resize(img, (image_w, image_h))
         filename = 'images/{}_img.jpg'.format(i)
         cv.imwrite(filename, img)
         sample_inputs.append({'i': i, 'gender': gender, 'age': age})

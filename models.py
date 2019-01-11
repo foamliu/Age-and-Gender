@@ -13,17 +13,17 @@ class AgeGenPredModel(nn.Module):
         resnet = torchvision.models.resnet18(pretrained=True)
 
         # Remove linear and pool layers (since we're not doing classification)
-        modules = list(resnet.children())[:-1]
+        modules = list(resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
-        self.fc1 = nn.Linear(512, 512)
+        self.fc1 = nn.Linear(6144, 512)
         self.age_pred = nn.Linear(512, age_num_classes)
 
-        self.fc2 = nn.Linear(512, 512)
+        self.fc2 = nn.Linear(6144, 512)
         self.gen_pred = nn.Linear(512, gen_num_classes)
 
     def forward(self, images):
-        x = self.resnet(images)  # [N, 512, 1 ,1]
-        last_conv_out = x.view(-1, 512)  # [N, 512]
+        x = self.resnet(images)  # [N, 512, 4, 3]
+        last_conv_out = x.view(-1, 6144)  # [N, 512]
 
         age_out = F.relu(self.fc1(last_conv_out))  # [N, 512]
         age_out = F.softmax(self.age_pred(age_out), dim=1)  # [N, 101]
@@ -36,4 +36,4 @@ class AgeGenPredModel(nn.Module):
 
 if __name__ == "__main__":
     model = AgeGenPredModel().to(device)
-    summary(model, (3, 224, 224))
+    summary(model, (3, 96, 112))

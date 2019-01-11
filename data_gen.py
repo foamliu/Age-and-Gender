@@ -19,7 +19,7 @@ class AGDataset(Dataset):
             data = pickle.load(file)
 
         samples = data['samples']
-        samples = random.shuffle(samples)
+        np.random.shuffle(samples)
 
         num_samples = len(samples)
         num_train = int(train_split * num_samples)

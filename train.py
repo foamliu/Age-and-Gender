@@ -56,8 +56,6 @@ def main():
               epoch=epoch)
         train_dataset.shuffle()
 
-        print('\n')
-
         # One epoch's validation
         recent_loss = validate(val_loader=val_loader,
                                model=model,
@@ -143,6 +141,7 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
                                                                                       age_loss=age_losses,
                                                                                       gen_accs=gen_accs,
                                                                                       age_accs=age_accs))
+    print('\n')
 
 
 def validate(val_loader, model, criterion_info):
@@ -195,6 +194,7 @@ def validate(val_loader, model, criterion_info):
                                                                                       age_loss=age_losses,
                                                                                       gen_accs=gen_accs,
                                                                                       age_accs=age_accs))
+    print('\n')
 
     return losses.avg
 

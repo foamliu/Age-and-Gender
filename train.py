@@ -63,7 +63,7 @@ def main():
 
         # Check if there was an improvement
         is_best = recent_loss < best_loss
-        best_loss = max(recent_loss, best_loss)
+        best_loss = min(recent_loss, best_loss)
         if not is_best:
             epochs_since_improvement += 1
             print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
@@ -162,7 +162,7 @@ def validate(val_loader, model, criterion_info):
         gen_true = gen_true.to(device)
 
         # Forward prop.
-        gen_out, age_out = model(inputs)
+        age_out, gen_out = model(inputs)
         # _, age_pred = torch.max(age_out, 1)
         # age_out = age_out.float()
 
@@ -182,7 +182,8 @@ def validate(val_loader, model, criterion_info):
         age_accs.update(age_accuracy)
 
         if i % print_freq == 0:
-            print('Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+            print('Validation: [{0}/{1}]\t'
+                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                   'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
                   'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
                   'Gender Accuracy {gen_accs.val:.3f} ({gen_accs.avg:.3f})\t'

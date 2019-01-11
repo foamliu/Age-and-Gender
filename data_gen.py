@@ -34,15 +34,10 @@ class AgeGenDataset(Dataset):
         sample = self.samples[i]
         full_path = sample['full_path']
         img = cv.imread(full_path)
-        loc = sample['face_location']
-        x1, y1, x2, y2 = loc[0], loc[1], loc[2], loc[3]
-        try:
-            img = img[y1:y2, x1:x2]
-            img = cv.resize(img, (image_h, image_w))
-        except:
-            print(x1, y1, x2, y2)
-            print(img.shape)
-            print(full_path)
+        # loc = sample['face_location']
+        # x1, y1, x2, y2 = loc[0], loc[1], loc[2], loc[3]
+        # img = img[y1:y2, x1:x2]
+        img = cv.resize(img, (image_h, image_w))
         img = img.transpose(2, 0, 1)
         assert img.shape == (3, image_h, image_w)
         assert np.max(img) <= 255

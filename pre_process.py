@@ -100,6 +100,7 @@ if __name__ == "__main__":
                 current_age[raw_age[i]] += 1
 
     try:
+        np.random.shuffle(samples)
         f = open(pickle_file, 'wb')
         save = {
             'age': age,

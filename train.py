@@ -2,7 +2,7 @@ import torch.optim
 import torch.utils.data
 from torch import nn
 
-from data_gen import AGDataset
+from data_gen import AgeGenDataset
 from models import AgeGenPredModel
 from utils import *
 
@@ -32,10 +32,10 @@ def main():
     criterion_info = (age_criterion, gender_criterion, reduce_age_loss)
 
     # Custom dataloaders
-    train_dataset = AGDataset('train')
+    train_dataset = AgeGenDataset('train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                                                num_workers=workers, pin_memory=True)
-    val_dataset = AGDataset('valid')
+    val_dataset = AgeGenDataset('valid')
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True,
                                              num_workers=workers, pin_memory=True)
 

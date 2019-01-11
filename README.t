@@ -12,7 +12,7 @@
 
 ### 年龄分布：
 
-460723张照片为平衡每个年龄最多只保存5000张，清洗后得到168303张，按年龄分布作图：
+460723张照片为平衡每个年龄最多只保存5000张，清洗后得到163065张，按年龄分布作图：
 
 ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/age.png)
 

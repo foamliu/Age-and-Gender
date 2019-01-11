@@ -12,7 +12,7 @@
 
 ### 年龄分布：
 
-460723张照片为平衡每个年龄最多只保存5000张，清洗后得到168303张，按年龄分布作图：
+460723张照片为平衡每个年龄最多只保存5000张，清洗后得到163065张，按年龄分布作图：
 
 ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/age.png)
 
@@ -26,21 +26,3 @@
 |性别：女, 年龄：25|性别：男, 年龄：64|性别：女, 年龄：30|性别：男, 年龄：35|
 |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_img.jpg) |
 |性别：女, 年龄：27|性别：女, 年龄：30|
-
-## 用法
-
-### 数据预处理
-清洗得到168303张训练图像：
-```bash
-$ python pre_process.py
-```
-
-### 训练
-```bash
-$ python train.py
-```
-
-### Demo
-```bash
-$ python demo.py
-```

@@ -22,14 +22,14 @@ class AgeGenPredModel(nn.Module):
         self.gen_pred = nn.Linear(512, gen_num_classes)
 
     def forward(self, images):
-        x = self.resnet(images)     # [N, 512, 1 ,1]
+        x = self.resnet(images)  # [N, 512, 1 ,1]
         last_conv_out = x.view(-1, 512)  # [N, 512]
 
-        age_out = F.relu(self.fc1(last_conv_out))   # [N, 512]
-        age_out = self.age_pred(age_out)    # [N, 101]
+        age_out = F.relu(self.fc1(last_conv_out))  # [N, 512]
+        age_out = F.softmax(self.age_pred(age_out), dim=1)  # [N, 101]
 
-        gen_out = F.relu(self.fc2(last_conv_out))   # [N, 512]
-        gen_out = self.gen_pred(gen_out)    # [N, 2]
+        gen_out = F.relu(self.fc2(last_conv_out))  # [N, 512]
+        gen_out = F.softmax(self.gen_pred(gen_out), dim=1)  # [N, 2]
 
         return age_out, gen_out
 

@@ -26,7 +26,7 @@ def main():
     model = model.to(device)
 
     # Loss function
-    age_criterion = nn.L1Loss().cuda()
+    age_criterion = nn.MSELoss().cuda()
     gender_criterion = nn.CrossEntropyLoss().cuda()
     reduce_age_loss = 1
     criterion_info = (age_criterion, gender_criterion, reduce_age_loss)
@@ -88,14 +88,19 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
     for i, (inputs, age_true, gen_true) in enumerate(train_loader):
         # Move to GPU, if available
         inputs = inputs.to(device)
-        age_true = age_true.float().to(device)
-        gen_true = gen_true.to(device)
+        age_true = age_true.float().to(device)  # [N]
+        gen_true = gen_true.to(device)  # [N]
 
         # Forward prop.
-        age_out, gen_out = model(inputs)
-        _, age_out = torch.max(age_out, 1)
+        age_out, gen_out = model(inputs)  # age_out => [N, 101], gen_out => [N, 2]
+        # print('age_out: ' + str(age_out))
+        # print('gen_out: ' + str(gen_out))
+        _, age_out = torch.max(age_out, 1)  # [N, 101] => [N]
         age_out = age_out.float()
-        # print('gen_true.size(): ' + str(gen_true.size()))
+        # print('age_out.size(): ' + str(age_out.size()))
+        # print('age_out: ' + str(age_out))
+        # print('age_true: ' + str(age_true))
+        # print('gen_true: ' + str(gen_true))
 
         # Calculate loss
         gen_loss = gender_criterion(gen_out, gen_true)

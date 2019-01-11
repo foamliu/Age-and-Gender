@@ -56,6 +56,8 @@ def main():
               epoch=epoch)
         train_dataset.shuffle()
 
+        print('\n')
+
         # One epoch's validation
         recent_loss = validate(val_loader=val_loader,
                                model=model,
@@ -121,7 +123,7 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
 
         # Keep track of metrics
         gen_accuracy = accuracy(gen_out, gen_true)
-        age_accuracy = accuracy(age_out, age_true)
+        age_accuracy = accuracy(age_out, age_true, 5)
         losses.update(loss.item())
         gen_losses.update(gen_loss.item())
         age_losses.update(age_loss.item())
@@ -135,12 +137,12 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
                   'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
                   'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
                   'Gender Accuracy {gen_accs.val:.3f} ({gen_accs.avg:.3f})\t'
-                  'Age Accuracy {age_accs.val:.3f} ({age_accs.avg:.3f})'.format(epoch, i, len(train_loader),
-                                                                                loss=losses,
-                                                                                gen_loss=gen_losses,
-                                                                                age_loss=age_losses,
-                                                                                gen_accs=gen_accs,
-                                                                                age_accs=age_accs))
+                  'Age Top-5 Accuracy {age_accs.val:.3f} ({age_accs.avg:.3f})'.format(epoch, i, len(train_loader),
+                                                                                      loss=losses,
+                                                                                      gen_loss=gen_losses,
+                                                                                      age_loss=age_losses,
+                                                                                      gen_accs=gen_accs,
+                                                                                      age_accs=age_accs))
 
 
 def validate(val_loader, model, criterion_info):
@@ -174,7 +176,7 @@ def validate(val_loader, model, criterion_info):
 
         # Keep track of metrics
         gender_accuracy = accuracy(gen_out, gen_true)
-        age_accuracy = accuracy(age_out, age_true)
+        age_accuracy = accuracy(age_out, age_true, 5)
         losses.update(loss.item())
         gen_losses.update(gen_loss.item())
         age_losses.update(age_loss.item())
@@ -187,12 +189,12 @@ def validate(val_loader, model, criterion_info):
                   'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
                   'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
                   'Gender Accuracy {gen_accs.val:.3f} ({gen_accs.avg:.3f})\t'
-                  'Age Accuracy {age_accs.val:.3f} ({age_accs.avg:.3f})'.format(i, len(val_loader),
-                                                                                loss=losses,
-                                                                                gen_loss=gen_losses,
-                                                                                age_loss=age_losses,
-                                                                                gen_accs=gen_accs,
-                                                                                age_accs=age_accs))
+                  'Age Top-5 Accuracy {age_accs.val:.3f} ({age_accs.avg:.3f})'.format(i, len(val_loader),
+                                                                                      loss=losses,
+                                                                                      gen_loss=gen_losses,
+                                                                                      age_loss=age_losses,
+                                                                                      gen_accs=gen_accs,
+                                                                                      age_accs=age_accs))
 
     return losses.avg
 

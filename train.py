@@ -3,7 +3,7 @@ import torch.utils.data
 from torch import nn
 
 from data_gen import AGDataset
-from models import AGModel
+from models import AgeGenPredModel
 from utils import *
 
 
@@ -13,7 +13,7 @@ def main():
 
     # Initialize / load checkpoint
     if checkpoint is None:
-        model = AGModel()
+        model = AgeGenPredModel()
         optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr)
     else:
         checkpoint = torch.load(checkpoint)

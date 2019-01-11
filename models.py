@@ -6,27 +6,27 @@ from torchsummary import summary
 from config import *
 
 
-class AGModel(nn.Module):
+class AgeGenPredModel(nn.Module):
     def __init__(self):
-        super(AGModel, self).__init__()
+        super(AgeGenPredModel, self).__init__()
 
-        resnet = torchvision.models.resnet50(pretrained=True)
+        resnet = torchvision.models.resnet18(pretrained=True)
 
         # Remove linear and pool layers (since we're not doing classification)
         modules = list(resnet.children())[:-1]
         self.resnet = nn.Sequential(*modules)
-        self.fc1 = nn.Linear(2048, 2048)
-        self.age_pred = nn.Linear(2048, age_num_classes)
+        self.fc1 = nn.Linear(512, 512)
+        self.age_pred = nn.Linear(512, age_num_classes)
 
-        self.fc2 = nn.Linear(2048, 2048)
-        self.gen_pred = nn.Linear(2048, 2)
+        self.fc2 = nn.Linear(512, 512)
+        self.gen_pred = nn.Linear(512, gen_num_classes)
 
     def forward(self, images):
         x = self.resnet(images)
-        last_conv_out = x.view(-1, 2048)  # (batch_size, 2048)
+        last_conv_out = x.view(-1, 512)  # (batch_size, 512)
 
         age_out = F.relu(self.fc1(last_conv_out))
-        age_out = F.softmax(self.age_pred(age_out), 1)
+        age_out = self.age_pred(age_out)
 
         gen_out = F.relu(self.fc2(last_conv_out))
         gen_out = self.gen_pred(gen_out)
@@ -35,5 +35,5 @@ class AGModel(nn.Module):
 
 
 if __name__ == "__main__":
-    model = AGModel().to(device)
+    model = AgeGenPredModel().to(device)
     summary(model, (3, 224, 224))

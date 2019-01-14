@@ -10,7 +10,7 @@ class AgeGenPredModel(nn.Module):
     def __init__(self):
         super(AgeGenPredModel, self).__init__()
 
-        resnet = torchvision.models.resnet18(pretrained=True)
+        resnet = torchvision.models.resnet50(pretrained=True)
 
         # Remove linear and pool layers (since we're not doing classification)
         modules = list(resnet.children())[:-2]

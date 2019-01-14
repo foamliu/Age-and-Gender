@@ -6,6 +6,7 @@ import cv2 as cv
 import numpy as np
 from torch.utils.data import Dataset
 
+from align_faces import align_face
 from config import *
 
 
@@ -33,11 +34,13 @@ class AgeGenDataset(Dataset):
     def __getitem__(self, i):
         sample = self.samples[i]
         full_path = sample['full_path']
-        img = cv.imread(full_path)
+        landmarks = sample['landmarks']
+        # img = cv.imread(full_path)
+        img = align_face(full_path, landmarks)
         # loc = sample['face_location']
         # x1, y1, x2, y2 = loc[0], loc[1], loc[2], loc[3]
         # img = img[y1:y2, x1:x2]
-        img = cv.resize(img, (image_w, image_h))
+        # img = cv.resize(img, (image_w, image_h))
         # print('img.shape: ' + str(img.shape))
         img = img.transpose(2, 0, 1)
         assert img.shape == (3, image_h, image_w)

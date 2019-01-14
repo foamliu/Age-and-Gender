@@ -29,6 +29,14 @@ $ python pre_process.py
 $ python train.py
 ```
 
+### 准确度比较
+
+图片大小|网络|性别准确度(验证集)|年龄TOP-5准确度(验证集)|
+|---|---|---|---|
+|96x112|ResNet-18|89.764%|18.060%|
+|224x224|ResNet-50|TBD|TBD|
+
+
 ### Demo
 ```bash
 $ python demo.py

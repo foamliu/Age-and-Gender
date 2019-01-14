@@ -1,7 +1,7 @@
 import torch
 
-image_w = 96
-image_h = 112
+image_w = 224
+image_h = 224
 channel = 3
 epochs = 10000
 patience = 10

@@ -1,0 +1,72 @@
+[
+    {
+        "i": 0,
+        "gen_true": 1,
+        "age_true": 47,
+        "gen_out": 1,
+        "age_out": 38
+    },
+    {
+        "i": 1,
+        "gen_true": 1,
+        "age_true": 44,
+        "gen_out": 1,
+        "age_out": 38
+    },
+    {
+        "i": 2,
+        "gen_true": 1,
+        "age_true": 50,
+        "gen_out": 1,
+        "age_out": 31
+    },
+    {
+        "i": 3,
+        "gen_true": 0,
+        "age_true": 19,
+        "gen_out": 0,
+        "age_out": 25
+    },
+    {
+        "i": 4,
+        "gen_true": 1,
+        "age_true": 35,
+        "gen_out": 1,
+        "age_out": 38
+    },
+    {
+        "i": 5,
+        "gen_true": 0,
+        "age_true": 27,
+        "gen_out": 0,
+        "age_out": 30
+    },
+    {
+        "i": 6,
+        "gen_true": 0,
+        "age_true": 37,
+        "gen_out": 0,
+        "age_out": 31
+    },
+    {
+        "i": 7,
+        "gen_true": 0,
+        "age_true": 41,
+        "gen_out": 0,
+        "age_out": 25
+    },
+    {
+        "i": 8,
+        "gen_true": 1,
+        "age_true": 40,
+        "gen_out": 1,
+        "age_out": 31
+    },
+    {
+        "i": 9,
+        "gen_true": 0,
+        "age_true": 15,
+        "gen_out": 0,
+        "age_out": 31
+    }
+]

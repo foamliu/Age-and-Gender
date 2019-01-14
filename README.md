@@ -16,13 +16,36 @@
 
 ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/age.png)
 
-### 样例数据
+## 用法
 
-1 | 2 | 3 | 4 |
+### 数据预处理
+提取163065张图片：
+```bash
+$ python pre_process.py
+```
+
+### 训练
+```bash
+$ python train.py
+```
+
+### Demo
+```bash
+$ python demo.py
+```
+
+效果图如下：
+
+原图 | 校准 | 识别 | 标注 |
 |---|---|---|---|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/0_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/1_img.jpg) |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_img.jpg)| ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_img.jpg) |
-|性别：女, 年龄：29|性别：女, 年龄：36|性别：男, 年龄：27|性别：女, 年龄：18|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_img.jpg) |![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_img.jpg)| ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_img.jpg) |
-|性别：男, 年龄：26|性别：男, 年龄：60|性别：男, 年龄：41|性别：男, 年龄：44|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_img.jpg)  | ![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_img.jpg) |
-|性别：男, 年龄：52|性别：女, 年龄：25|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/0_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/0_img.jpg)|性别：男, 年龄：38|性别：男, 年龄：47|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/1_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/1_img.jpg)|性别：男, 年龄：38|性别：男, 年龄：44|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_img.jpg)|性别：男, 年龄：31|性别：男, 年龄：50|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_img.jpg)|性别：女, 年龄：25|性别：女, 年龄：19|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_img.jpg)|性别：男, 年龄：38|性别：男, 年龄：35|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_img.jpg)|性别：女, 年龄：30|性别：女, 年龄：27|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_img.jpg)|性别：女, 年龄：31|性别：女, 年龄：37|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_img.jpg)|性别：女, 年龄：25|性别：女, 年龄：41|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_img.jpg)|性别：男, 年龄：31|性别：男, 年龄：40|
+|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_img.jpg)|性别：女, 年龄：31|性别：女, 年龄：15|
+

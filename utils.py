@@ -131,8 +131,16 @@ def accuracy(scores, targets, k=1):
     return correct_total.item() * (100.0 / batch_size)
 
 
-def mean_absolute_error(y_pred, y_true):
-    return L1Loss(y_pred, y_true)
+def mean_absolute_error(scores, targets):
+    # print('scores.size(): ' + str(scores.size()))
+    # print('targets.size(): ' + str(targets.size()))
+    _, y_pred = scores.topk(1, 1, True, True)
+    y_pred = y_pred.view(-1).float()
+    y_true = targets.float()
+    # print('y_pred.size(): ' + str(y_pred.size()))
+    # print('y_true.size(): ' + str(y_true.size()))
+    loss = L1Loss()
+    return loss(y_pred, y_true)
 
 
 def align_face(img_fn, facial5points):

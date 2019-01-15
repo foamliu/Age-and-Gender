@@ -81,12 +81,13 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
     gen_losses = AverageMeter()
     age_losses = AverageMeter()
     gen_accs = AverageMeter()  # gender accuracy
-    age_accs = AverageMeter()  # age accuracy
+    age_mae = AverageMeter()  # age mae
 
     age_criterion, gender_criterion, reduce_age_loss = criterion_info
 
     # Batches
     for i, (inputs, age_true, gen_true) in enumerate(train_loader):
+        batch_size = inputs.size()[0]
         # Move to GPU, if available
         inputs = inputs.to(device)
         age_true = age_true.to(device)  # [N]
@@ -121,12 +122,12 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
 
         # Keep track of metrics
         gen_accuracy = accuracy(gen_out, gen_true)
-        age_accuracy = accuracy(age_out, age_true, 5)
-        losses.update(loss.item())
-        gen_losses.update(gen_loss.item())
-        age_losses.update(age_loss.item())
-        gen_accs.update(gen_accuracy)
-        age_accs.update(age_accuracy)
+        age_mae_loss = mean_absolute_error(age_out, age_true)
+        losses.update(loss.item(), batch_size)
+        gen_losses.update(gen_loss.item(), batch_size)
+        age_losses.update(age_loss.item(), batch_size)
+        gen_accs.update(gen_accuracy, batch_size)
+        age_mae.update(age_mae_loss)
 
         # Print status
         if i % print_freq == 0:
@@ -135,12 +136,12 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
                   'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
                   'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
                   'Gender Accuracy {gen_accs.val:.3f} ({gen_accs.avg:.3f})\t'
-                  'Age Top-5 Accuracy {age_accs.val:.3f} ({age_accs.avg:.3f})'.format(epoch, i, len(train_loader),
-                                                                                      loss=losses,
-                                                                                      gen_loss=gen_losses,
-                                                                                      age_loss=age_losses,
-                                                                                      gen_accs=gen_accs,
-                                                                                      age_accs=age_accs))
+                  'Age MAE {age_mae.val:.3f} ({age_mae.avg:.3f})'.format(epoch, i, len(train_loader),
+                                                                         loss=losses,
+                                                                         gen_loss=gen_losses,
+                                                                         age_loss=age_losses,
+                                                                         gen_accs=gen_accs,
+                                                                         age_mae=age_mae))
     print('\n')
 
 
@@ -151,12 +152,13 @@ def validate(val_loader, model, criterion_info):
     gen_losses = AverageMeter()
     age_losses = AverageMeter()
     gen_accs = AverageMeter()  # gender accuracy
-    age_accs = AverageMeter()  # age accuracy
+    age_mae = AverageMeter()  # age mae
 
     age_criterion, gender_criterion, reduce_age_loss = criterion_info
 
     # Batches
     for i, (inputs, age_true, gen_true) in enumerate(val_loader):
+        batch_size = inputs.size()[0]
         # Move to GPU, if available
         inputs = inputs.to(device)
         age_true = age_true.to(device)
@@ -175,12 +177,12 @@ def validate(val_loader, model, criterion_info):
 
         # Keep track of metrics
         gender_accuracy = accuracy(gen_out, gen_true)
-        age_accuracy = accuracy(age_out, age_true, 5)
+        age_mae_loss = mean_absolute_error(age_out, age_true)
         losses.update(loss.item())
-        gen_losses.update(gen_loss.item())
-        age_losses.update(age_loss.item())
-        gen_accs.update(gender_accuracy)
-        age_accs.update(age_accuracy)
+        gen_losses.update(gen_loss.item(), batch_size)
+        age_losses.update(age_loss.item(), batch_size)
+        gen_accs.update(gender_accuracy, batch_size)
+        age_mae.update(age_mae_loss, batch_size)
 
         if i % print_freq == 0:
             print('Validation: [{0}/{1}]\t'
@@ -188,12 +190,12 @@ def validate(val_loader, model, criterion_info):
                   'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
                   'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
                   'Gender Accuracy {gen_accs.val:.3f} ({gen_accs.avg:.3f})\t'
-                  'Age Top-5 Accuracy {age_accs.val:.3f} ({age_accs.avg:.3f})'.format(i, len(val_loader),
-                                                                                      loss=losses,
-                                                                                      gen_loss=gen_losses,
-                                                                                      age_loss=age_losses,
-                                                                                      gen_accs=gen_accs,
-                                                                                      age_accs=age_accs))
+                  'Age MAE {age_mae.val:.3f} ({age_mae.avg:.3f})'.format(i, len(val_loader),
+                                                                         loss=losses,
+                                                                         gen_loss=gen_losses,
+                                                                         age_loss=age_losses,
+                                                                         gen_accs=gen_accs,
+                                                                         age_mae=age_mae))
     print('\n')
 
     return losses.avg

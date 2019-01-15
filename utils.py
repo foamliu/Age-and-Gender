@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 import cv2 as cv
 import numpy as np
+from torch.nn import L1Loss
 
 from align_faces import get_reference_facial_points, warp_and_crop_face
 from config import *
@@ -130,8 +131,8 @@ def accuracy(scores, targets, k=1):
     return correct_total.item() * (100.0 / batch_size)
 
 
-def mean_absolute_error(scores, targets):
-    pass
+def mean_absolute_error(y_pred, y_true):
+    return L1Loss(y_pred, y_true)
 
 
 def align_face(img_fn, facial5points):

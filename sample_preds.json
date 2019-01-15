@@ -1,72 +1,72 @@
 [
     {
         "i": 0,
+        "gen_true": 0,
+        "age_true": 24,
+        "gen_out": 0,
+        "age_out": 29
+    },
+    {
+        "i": 1,
         "gen_true": 1,
-        "age_true": 35,
+        "age_true": 26,
+        "gen_out": 0,
+        "age_out": 29
+    },
+    {
+        "i": 2,
+        "gen_true": 1,
+        "age_true": 49,
+        "gen_out": 1,
+        "age_out": 34
+    },
+    {
+        "i": 3,
+        "gen_true": 0,
+        "age_true": 29,
+        "gen_out": 0,
+        "age_out": 29
+    },
+    {
+        "i": 4,
+        "gen_true": 0,
+        "age_true": 23,
         "gen_out": 1,
         "age_out": 36
     },
     {
-        "i": 1,
-        "gen_true": 0,
-        "age_true": 31,
-        "gen_out": 0,
-        "age_out": 27
-    },
-    {
-        "i": 2,
-        "gen_true": 0,
-        "age_true": 50,
-        "gen_out": 0,
-        "age_out": 25
-    },
-    {
-        "i": 3,
-        "gen_true": 1,
-        "age_true": 22,
-        "gen_out": 1,
-        "age_out": 28
-    },
-    {
-        "i": 4,
-        "gen_true": 1,
-        "age_true": 55,
-        "gen_out": 1,
-        "age_out": 39
-    },
-    {
         "i": 5,
         "gen_true": 1,
-        "age_true": 10,
+        "age_true": 15,
         "gen_out": 1,
-        "age_out": 27
+        "age_out": 29
     },
     {
         "i": 6,
-        "gen_true": 0,
-        "age_true": 31,
-        "gen_out": 0,
-        "age_out": 28
+        "gen_true": 1,
+        "age_true": 32,
+        "gen_out": 1,
+        "age_out": 34
     },
     {
         "i": 7,
         "gen_true": 1,
-        "age_true": 29,
+        "age_true": 42,
         "gen_out": 1,
-        "age_out": 27
+        "age_out": 42
     },
     {
         "i": 8,
         "gen_true": 0,
-        "age_true": 34,
+        "age_true": 31,
         "gen_out": 1,
-        "age_out": 28
+        "age_out": 36
     },
     {
         "i": 9,
-        "gen_true": 0,
-        "age_true": 6,
-        "gen_out": 0,
-        "age_out": 25
+        "gen_true": 1,
+        "age_true": 59,
+        "gen_out": 1,
+        "age_out": 39
     }
 ]

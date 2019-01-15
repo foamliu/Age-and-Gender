@@ -158,6 +158,6 @@ def align_face(img_fn, facial5points):
     reference_5pts = get_reference_facial_points(
         output_size, inner_padding_factor, outer_padding, default_square)
 
-    # dst_img = warp_and_crop_face(raw, facial5points, reference_5pts, crop_size)
+    # dst_img = warp_and_crop_face(raw, facial5points)
     dst_img = warp_and_crop_face(raw, facial5points, reference_pts=reference_5pts, crop_size=crop_size)
     return dst_img

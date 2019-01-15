@@ -5,8 +5,8 @@ import random
 import cv2 as cv
 import numpy as np
 
-from align_faces import align_face
 from config import *
+from utils import align_face
 
 if __name__ == "__main__":
     with open(pickle_file, 'rb') as file:
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     samples = random.sample(samples, 10)
 
-    inputs = torch.zeros([10, 3, 112, 96], dtype=torch.float, device=device)
+    inputs = torch.zeros([10, 3, image_h, image_w], dtype=torch.float, device=device)
 
     sample_preds = []
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         gender = sample['gender']
         print(full_path)
         raw = cv.imread(full_path)
-        raw = cv.resize(raw, (224, 224))
+        raw = cv.resize(raw, (image_w, image_h))
         filename = 'images/{}_raw.jpg'.format(i)
         cv.imwrite(filename, raw)
         img = align_face(full_path, landmarks)

@@ -47,14 +47,14 @@ $ python demo.py
 
 原图 | 校准 | 识别 | 标注 |
 |---|---|---|---|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/0_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/0_img.jpg)|$(result_out_0)|$(result_true_0)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/1_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/1_img.jpg)|$(result_out_1)|$(result_true_1)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_img.jpg)|$(result_out_2)|$(result_true_2)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_img.jpg)|$(result_out_3)|$(result_true_3)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_img.jpg)|$(result_out_4)|$(result_true_4)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_img.jpg)|$(result_out_5)|$(result_true_5)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_img.jpg)|$(result_out_6)|$(result_true_6)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_img.jpg)|$(result_out_7)|$(result_true_7)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_img.jpg)|$(result_out_8)|$(result_true_8)|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_img.jpg)|$(result_out_9)|$(result_true_9)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/0_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/0_img.jpg)|$(result_out_0)|$(result_true_0)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/1_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/1_img.jpg)|$(result_out_1)|$(result_true_1)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/2_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/2_img.jpg)|$(result_out_2)|$(result_true_2)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/3_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/3_img.jpg)|$(result_out_3)|$(result_true_3)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/4_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/4_img.jpg)|$(result_out_4)|$(result_true_4)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/5_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/5_img.jpg)|$(result_out_5)|$(result_true_5)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/6_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/6_img.jpg)|$(result_out_6)|$(result_true_6)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/7_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/7_img.jpg)|$(result_out_7)|$(result_true_7)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/8_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/8_img.jpg)|$(result_out_8)|$(result_true_8)|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/9_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/9_img.jpg)|$(result_out_9)|$(result_true_9)|
 

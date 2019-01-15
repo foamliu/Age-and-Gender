@@ -47,14 +47,14 @@ $ python demo.py
 
 原图 | 校准 | 识别 | 标注 |
 |---|---|---|---|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/0_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/0_img.jpg)|性别：男, 年龄：36|性别：男, 年龄：35|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/1_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/1_img.jpg)|性别：女, 年龄：27|性别：女, 年龄：31|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/2_img.jpg)|性别：女, 年龄：25|性别：女, 年龄：50|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/3_img.jpg)|性别：男, 年龄：28|性别：男, 年龄：22|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/4_img.jpg)|性别：男, 年龄：39|性别：男, 年龄：55|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/5_img.jpg)|性别：男, 年龄：27|性别：男, 年龄：10|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/6_img.jpg)|性别：女, 年龄：28|性别：女, 年龄：31|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/7_img.jpg)|性别：男, 年龄：27|性别：男, 年龄：29|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/8_img.jpg)|性别：男, 年龄：28|性别：女, 年龄：34|
-|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_raw.jpg)|![image](https://github.com/foamliu/Joint-Estimation-of-Age-and-Gender/raw/master/images/9_img.jpg)|性别：女, 年龄：25|性别：女, 年龄：6|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/0_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/0_img.jpg)|性别：男, 年龄：36|性别：男, 年龄：35|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/1_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/1_img.jpg)|性别：女, 年龄：27|性别：女, 年龄：31|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/2_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/2_img.jpg)|性别：女, 年龄：25|性别：女, 年龄：50|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/3_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/3_img.jpg)|性别：男, 年龄：28|性别：男, 年龄：22|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/4_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/4_img.jpg)|性别：男, 年龄：39|性别：男, 年龄：55|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/5_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/5_img.jpg)|性别：男, 年龄：27|性别：男, 年龄：10|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/6_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/6_img.jpg)|性别：女, 年龄：28|性别：女, 年龄：31|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/7_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/7_img.jpg)|性别：男, 年龄：27|性别：男, 年龄：29|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/8_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/8_img.jpg)|性别：男, 年龄：28|性别：女, 年龄：34|
+|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/9_raw.jpg)|![image](https://github.com/foamliu/Age-and-Gender/raw/master/images/9_img.jpg)|性别：女, 年龄：25|性别：女, 年龄：6|
 

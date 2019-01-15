@@ -5,9 +5,11 @@ import random
 import cv2 as cv
 import numpy as np
 from torch.utils.data import Dataset
+from torchvision import transforms
 
-from utils import align_face
 from config import *
+from models import data_transforms
+from utils import align_face
 
 
 class AgeGenDataset(Dataset):
@@ -25,11 +27,12 @@ class AgeGenDataset(Dataset):
         num_train = int(train_split * num_samples)
 
         if split == 'train':
-            samples = samples[:num_train]
-        else:
-            samples = samples[num_train:]
+            self.samples = samples[:num_train]
+            self.transformer = data_transforms['train']
 
-        self.samples = samples
+        else:
+            self.samples = samples[num_train:]
+            self.transformer = data_transforms['val']
 
     def __getitem__(self, i):
         sample = self.samples[i]
@@ -37,15 +40,19 @@ class AgeGenDataset(Dataset):
         landmarks = sample['landmarks']
         # img = cv.imread(full_path)
         img = align_face(full_path, landmarks)
+        img = transforms.ToPILImage()(img)
+        # print('img.size: ' + str(img.size))
+        img = self.transformer(img)
+        # print('img.size(): ' + str(img.size()))
         # loc = sample['face_location']
         # x1, y1, x2, y2 = loc[0], loc[1], loc[2], loc[3]
         # img = img[y1:y2, x1:x2]
         # img = cv.resize(img, (image_w, image_h))
         # print('img.shape: ' + str(img.shape))
-        img = img.transpose(2, 0, 1)
-        assert img.shape == (3, image_h, image_w)
-        assert np.max(img) <= 255
-        img = torch.FloatTensor(img / 255.)
+        # img = img.transpose(2, 0, 1)
+        # assert img.shape == (3, image_h, image_w)
+        # assert np.max(img) <= 255
+        # img = torch.FloatTensor(img / 255.)
         age = sample['age']
         gender = sample['gender']
         return img, age, gender

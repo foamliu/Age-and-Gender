@@ -3,7 +3,7 @@ import torch.utils.data
 from torch import nn
 
 from data_gen import AgeGenDataset
-from models import AgeGenPredModelClassification
+from models import AgeGenPredModelRegression
 from utils import *
 
 
@@ -13,8 +13,8 @@ def main():
 
     # Initialize / load checkpoint
     if checkpoint is None:
-        model = AgeGenPredModelClassification()
-        optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr)
+        model = AgeGenPredModelRegression()
+        optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()))
     else:
         checkpoint = torch.load(checkpoint)
         start_epoch = checkpoint['epoch'] + 1
@@ -26,7 +26,7 @@ def main():
     model = model.to(device)
 
     # Loss function
-    age_criterion = nn.CrossEntropyLoss().cuda()
+    age_criterion = nn.L1Loss().cuda()
     gender_criterion = nn.CrossEntropyLoss().cuda()
     age_loss_weight = 1
     criterion_info = (age_criterion, gender_criterion, age_loss_weight)
@@ -83,14 +83,14 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
     gen_accs = AverageMeter()  # gender accuracy
     age_mae = AverageMeter()  # age mae
 
-    age_criterion, gender_criterion, reduce_age_loss = criterion_info
+    age_criterion, gender_criterion, age_loss_weight = criterion_info
 
     # Batches
     for i, (inputs, age_true, gen_true) in enumerate(train_loader):
         batch_size = inputs.size()[0]
         # Move to GPU, if available
         inputs = inputs.to(device)
-        age_true = age_true.to(device)  # [N]
+        age_true = age_true.view(-1, 1).float().to(device)  # [N]
         gen_true = gen_true.to(device)  # [N]
 
         # Forward prop.
@@ -107,7 +107,7 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
         # Calculate loss
         gen_loss = gender_criterion(gen_out, gen_true)
         age_loss = age_criterion(age_out, age_true)
-        age_loss *= reduce_age_loss
+        age_loss *= age_loss_weight
         loss = gen_loss + age_loss
 
         # Back prop.
@@ -122,7 +122,8 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
 
         # Keep track of metrics
         gen_accuracy = accuracy(gen_out, gen_true)
-        age_mae_loss = mean_absolute_error(age_out, age_true)
+        loss_func = L1Loss()
+        age_mae_loss = loss_func(age_out, age_true)
         losses.update(loss.item(), batch_size)
         gen_losses.update(gen_loss.item(), batch_size)
         age_losses.update(age_loss.item(), batch_size)
@@ -154,14 +155,14 @@ def validate(val_loader, model, criterion_info):
     gen_accs = AverageMeter()  # gender accuracy
     age_mae = AverageMeter()  # age mae
 
-    age_criterion, gender_criterion, reduce_age_loss = criterion_info
+    age_criterion, gender_criterion, age_loss_weight = criterion_info
 
     # Batches
     for i, (inputs, age_true, gen_true) in enumerate(val_loader):
         batch_size = inputs.size()[0]
         # Move to GPU, if available
         inputs = inputs.to(device)
-        age_true = age_true.to(device)
+        age_true = age_true.view(-1, 1).float().to(device)
         gen_true = gen_true.to(device)
 
         # Forward prop.
@@ -172,12 +173,13 @@ def validate(val_loader, model, criterion_info):
         # Calculate loss
         gen_loss = gender_criterion(gen_out, gen_true)
         age_loss = age_criterion(age_out, age_true)
-        age_loss *= reduce_age_loss
+        age_loss *= age_loss_weight
         loss = gen_loss + age_loss
 
         # Keep track of metrics
         gender_accuracy = accuracy(gen_out, gen_true)
-        age_mae_loss = mean_absolute_error(age_out, age_true)
+        loss_func = L1Loss()
+        age_mae_loss = loss_func(age_out, age_true)
         losses.update(loss.item())
         gen_losses.update(gen_loss.item(), batch_size)
         age_losses.update(age_loss.item(), batch_size)

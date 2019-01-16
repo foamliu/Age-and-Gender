@@ -78,5 +78,5 @@ class AgeGenPredModel(nn.Module):
 
 
 if __name__ == "__main__":
-    model = AgeGenPredModelRegression().to(device)
+    model = AgeGenPredModel().to(device)
     summary(model, (3, 224, 224))

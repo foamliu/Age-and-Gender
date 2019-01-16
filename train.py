@@ -148,44 +148,45 @@ def validate(val_loader, model, criterion_info):
 
     age_criterion, gender_criterion, age_loss_weight = criterion_info
 
-    # Batches
-    for i, (inputs, age_true, gen_true) in enumerate(val_loader):
-        chunk_size = inputs.size()[0]
-        # Move to GPU, if available
-        inputs = inputs.to(device)
-        age_true = age_true.view(-1, 1).float().to(device)
-        gen_true = gen_true.to(device)
+    with torch.no_grad():
+        # Batches
+        for i, (inputs, age_true, gen_true) in enumerate(val_loader):
+            chunk_size = inputs.size()[0]
+            # Move to GPU, if available
+            inputs = inputs.to(device)
+            age_true = age_true.view(-1, 1).float().to(device)
+            gen_true = gen_true.to(device)
 
-        # Forward prop.
-        age_out, gen_out = model(inputs)
+            # Forward prop.
+            age_out, gen_out = model(inputs)
 
-        # Calculate loss
-        gen_loss = gender_criterion(gen_out, gen_true)
-        age_loss = age_criterion(age_out, age_true)
-        age_loss *= age_loss_weight
-        loss = gen_loss + age_loss
+            # Calculate loss
+            gen_loss = gender_criterion(gen_out, gen_true)
+            age_loss = age_criterion(age_out, age_true)
+            age_loss *= age_loss_weight
+            loss = gen_loss + age_loss
 
-        # Keep track of metrics
-        gender_accuracy = accuracy(gen_out, gen_true)
-        age_mae_loss = age_criterion(age_out, age_true)
-        losses.update(loss.item(), chunk_size)
-        gen_losses.update(gen_loss.item(), chunk_size)
-        age_losses.update(age_loss.item(), chunk_size)
-        gen_accs.update(gender_accuracy, chunk_size)
-        age_mae.update(age_mae_loss, chunk_size)
+            # Keep track of metrics
+            gender_accuracy = accuracy(gen_out, gen_true)
+            age_mae_loss = age_criterion(age_out, age_true)
+            losses.update(loss.item(), chunk_size)
+            gen_losses.update(gen_loss.item(), chunk_size)
+            age_losses.update(age_loss.item(), chunk_size)
+            gen_accs.update(gender_accuracy, chunk_size)
+            age_mae.update(age_mae_loss, chunk_size)
 
-        if i % print_freq == 0:
-            print('Validation: [{0}/{1}]\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
-                  'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
-                  'Gender Accuracy {gen_accs.val:.3f} ({gen_accs.avg:.3f})\t'
-                  'Age MAE {age_mae.val:.3f} ({age_mae.avg:.3f})'.format(i, len(val_loader),
-                                                                         loss=losses,
-                                                                         gen_loss=gen_losses,
-                                                                         age_loss=age_losses,
-                                                                         gen_accs=gen_accs,
-                                                                         age_mae=age_mae))
+            if i % print_freq == 0:
+                print('Validation: [{0}/{1}]\t'
+                      'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                      'Gender Loss {gen_loss.val:.4f} ({gen_loss.avg:.4f})\t'
+                      'Age Loss {age_loss.val:.4f} ({age_loss.avg:.4f})\t'
+                      'Gender Accuracy {gen_accs.val:.3f} ({gen_accs.avg:.3f})\t'
+                      'Age MAE {age_mae.val:.3f} ({age_mae.avg:.3f})'.format(i, len(val_loader),
+                                                                             loss=losses,
+                                                                             gen_loss=gen_losses,
+                                                                             age_loss=age_losses,
+                                                                             gen_accs=gen_accs,
+                                                                             age_mae=age_mae))
     print('\n')
 
     return losses.avg

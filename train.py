@@ -28,7 +28,7 @@ def main():
     # Loss function
     age_criterion = nn.L1Loss().cuda()
     gender_criterion = nn.CrossEntropyLoss().cuda()
-    age_loss_weight = 1
+    age_loss_weight = 0.1
     criterion_info = (age_criterion, gender_criterion, age_loss_weight)
 
     # Custom dataloaders

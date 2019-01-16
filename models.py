@@ -49,9 +49,9 @@ class AgeGenPredModelClassification(nn.Module):
         return age_out, gen_out
 
 
-class AgeGenPredModelRegression(nn.Module):
+class AgeGenPredModel(nn.Module):
     def __init__(self):
-        super(AgeGenPredModelRegression, self).__init__()
+        super(AgeGenPredModel, self).__init__()
 
         resnet = torchvision.models.resnet18(pretrained=True)
 

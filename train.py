@@ -3,7 +3,7 @@ import torch.utils.data
 from torch import nn
 
 from data_gen import AgeGenDataset
-from models import AgeGenPredModelRegression
+from models import AgeGenPredModel
 from utils import *
 
 
@@ -13,8 +13,8 @@ def main():
 
     # Initialize / load checkpoint
     if checkpoint is None:
-        model = AgeGenPredModelRegression()
-        optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()))
+        model = AgeGenPredModel()
+        optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr)
     else:
         checkpoint = torch.load(checkpoint)
         start_epoch = checkpoint['epoch'] + 1
@@ -33,11 +33,11 @@ def main():
 
     # Custom dataloaders
     train_dataset = AgeGenDataset('train')
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
-                                               num_workers=workers, pin_memory=True)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=workers,
+                                               pin_memory=True)
     val_dataset = AgeGenDataset('valid')
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True,
-                                             num_workers=workers, pin_memory=True)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=workers,
+                                             pin_memory=True)
 
     # Epochs
     for epoch in range(start_epoch, epochs):
@@ -94,7 +94,7 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
         gen_true = gen_true.to(device)  # [N, 1]
 
         # Forward prop.
-        age_out, gen_out = model(inputs)  # age_out => [N, 101], gen_out => [N, 2]
+        age_out, gen_out = model(inputs)  # age_out => [N, 1], gen_out => [N, 2]
 
         # Calculate loss
         gen_loss = gender_criterion(gen_out, gen_true)
@@ -168,7 +168,7 @@ def validate(val_loader, model, criterion_info):
         # Keep track of metrics
         gender_accuracy = accuracy(gen_out, gen_true)
         age_mae_loss = age_criterion(age_out, age_true)
-        losses.update(loss.item())
+        losses.update(loss.item(), chunk_size)
         gen_losses.update(gen_loss.item(), chunk_size)
         age_losses.update(age_loss.item(), chunk_size)
         gen_accs.update(gender_accuracy, chunk_size)

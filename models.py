@@ -58,7 +58,7 @@ class AgeGenPredModel(nn.Module):
         # Remove linear and pool layers (since we're not doing classification)
         modules = list(resnet.children())[:-1]
         self.resnet = nn.Sequential(*modules)
-        self.fc1 = nn.Linear(512, 512)
+        # self.fc1 = nn.Linear(512, 512)
         self.age_pred = nn.Linear(512, 1)
 
         self.fc2 = nn.Linear(512, 512)
@@ -68,8 +68,8 @@ class AgeGenPredModel(nn.Module):
         x = self.resnet(images)  # [N, 512, 1, 1]
         last_conv_out = x.view(-1, 512)  # [N, 512]
 
-        age_out = F.relu(self.fc1(last_conv_out))  # [N, 512]
-        age_out = self.age_pred(age_out)  # [N, 1]
+        # age_out = F.relu(self.fc1(last_conv_out))  # [N, 512]
+        age_out = self.age_pred(last_conv_out)  # [N, 1]
 
         gen_out = F.relu(self.fc2(last_conv_out))  # [N, 512]
         gen_out = F.softmax(self.gen_pred(gen_out), dim=1)  # [N, 2]

@@ -9,7 +9,7 @@ from utils import *
 
 
 def main():
-    global best_loss, epochs_since_improvement, checkpoint, start_epoch
+    global best_loss, epochs_since_improvement, checkpoint, start_epoch, l1_criterion
     best_loss = 100000
     writer = SummaryWriter()
 
@@ -29,8 +29,9 @@ def main():
     model = model.to(device)
 
     # Loss function
-    age_criterion = nn.L1Loss().cuda()
-    gender_criterion = nn.CrossEntropyLoss().cuda()
+    age_criterion = nn.MSELoss().to(device)
+    gender_criterion = nn.CrossEntropyLoss().to(device)
+    l1_criterion = nn.L1Loss().to(device)
     age_loss_weight = 0.1
     criterion_info = (age_criterion, gender_criterion, age_loss_weight)
 
@@ -124,7 +125,7 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
 
         # Keep track of metrics
         gen_accuracy = accuracy(gen_out, gen_true)
-        age_mae_loss = age_criterion(age_out, age_true)
+        age_mae_loss = l1_criterion(age_out, age_true)
         losses.update(loss.item(), chunk_size)
         gen_losses.update(gen_loss.item(), chunk_size)
         age_losses.update(age_loss.item(), chunk_size)
@@ -179,7 +180,7 @@ def validate(val_loader, model, criterion_info):
 
             # Keep track of metrics
             gender_accuracy = accuracy(gen_out, gen_true)
-            age_mae_loss = age_criterion(age_out, age_true)
+            age_mae_loss = l1_criterion(age_out, age_true)
             losses.update(loss.item(), chunk_size)
             gen_losses.update(gen_loss.item(), chunk_size)
             age_losses.update(age_loss.item(), chunk_size)

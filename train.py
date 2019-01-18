@@ -32,7 +32,7 @@ def main():
     age_criterion = nn.L1Loss().to(device)
     gender_criterion = nn.CrossEntropyLoss().to(device)
     l1_criterion = nn.L1Loss().to(device)
-    age_loss_weight = 0.01
+    age_loss_weight = 0.1
     criterion_info = (age_criterion, gender_criterion, age_loss_weight)
 
     # Custom dataloaders

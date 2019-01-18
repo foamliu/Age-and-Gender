@@ -45,7 +45,7 @@ def get_reference_facial_points(output_size=None,
     if (output_size and
             output_size[0] == tmp_crop_size[0] and
             output_size[1] == tmp_crop_size[1]):
-        print('output_size == DEFAULT_CROP_SIZE {}: return default reference points'.format(tmp_crop_size))
+        # print('output_size == DEFAULT_CROP_SIZE {}: return default reference points'.format(tmp_crop_size))
         return tmp_5pts
 
     if (inner_padding_factor == 0 and

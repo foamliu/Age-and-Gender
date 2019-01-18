@@ -1,5 +1,6 @@
 import torch.optim
 import torch.utils.data
+from tensorboardX import SummaryWriter
 from torch import nn
 
 from data_gen import AgeGenDataset
@@ -10,6 +11,7 @@ from utils import *
 def main():
     global best_loss, epochs_since_improvement, checkpoint, start_epoch
     best_loss = 100000
+    writer = SummaryWriter()
 
     # Initialize / load checkpoint
     if checkpoint is None:
@@ -45,25 +47,32 @@ def main():
         # Decay learning rate if there is no improvement for 8 consecutive epochs, and terminate training after 20
         if epochs_since_improvement == 20:
             break
-        if epochs_since_improvement > 0 and epochs_since_improvement % 8 == 0:
-            adjust_learning_rate(optimizer, 0.5)
+        if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
+            adjust_learning_rate(optimizer, 0.1)
 
         # One epoch's training
-        train(train_loader=train_loader,
-              model=model,
-              criterion_info=criterion_info,
-              optimizer=optimizer,
-              epoch=epoch)
+        train_loss, train_gen_accs, train_age_mae = train(train_loader=train_loader,
+                                                          model=model,
+                                                          criterion_info=criterion_info,
+                                                          optimizer=optimizer,
+                                                          epoch=epoch)
         train_dataset.shuffle()
+        writer.add_scalar('Train Loss', train_loss, epoch)
+        writer.add_scalar('Train Gender Accuracy', train_gen_accs, epoch)
+        writer.add_scalar('Train Age MAE', train_age_mae, epoch)
 
         # One epoch's validation
-        recent_loss = validate(val_loader=val_loader,
-                               model=model,
-                               criterion_info=criterion_info)
+        valid_loss, valid_gen_accs, valid_age_mae = validate(val_loader=val_loader,
+                                                             model=model,
+                                                             criterion_info=criterion_info)
+
+        writer.add_scalar('Valid Loss', valid_loss, epoch)
+        writer.add_scalar('Valid Gender Accuracy', valid_gen_accs, epoch)
+        writer.add_scalar('Valid Age MAE', valid_age_mae, epoch)
 
         # Check if there was an improvement
-        is_best = recent_loss < best_loss
-        best_loss = min(recent_loss, best_loss)
+        is_best = valid_loss < best_loss
+        best_loss = min(valid_loss, best_loss)
         if not is_best:
             epochs_since_improvement += 1
             print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
@@ -134,7 +143,8 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
                                                                          age_loss=age_losses,
                                                                          gen_accs=gen_accs,
                                                                          age_mae=age_mae))
-    print('\n')
+
+    return losses.avg, gen_accs.avg, age_mae.avg
 
 
 def validate(val_loader, model, criterion_info):
@@ -187,9 +197,8 @@ def validate(val_loader, model, criterion_info):
                                                                              age_loss=age_losses,
                                                                              gen_accs=gen_accs,
                                                                              age_mae=age_mae))
-    print('\n')
 
-    return losses.avg
+    return losses.avg, gen_accs.avg, age_mae.avg
 
 
 if __name__ == '__main__':

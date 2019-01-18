@@ -16,7 +16,8 @@ def main():
     # Initialize / load checkpoint
     if checkpoint is None:
         model = AgeGenPredModel()
-        optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr)
+        optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr,
+                                     weight_decay=5e-4)
     else:
         checkpoint = torch.load(checkpoint)
         start_epoch = checkpoint['epoch'] + 1

@@ -59,10 +59,10 @@ class AgeGenPredModel(nn.Module):
         modules = list(resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
         self.pool = nn.AvgPool2d(4)
-        # self.fc1 = nn.Linear(512, 512)
+        self.fc1 = nn.Linear(512, 512)
         self.age_pred = nn.Linear(512, 1)
 
-        # self.fc2 = nn.Linear(512, 512)
+        self.fc2 = nn.Linear(512, 512)
         self.gen_pred = nn.Linear(512, gen_num_classes)
 
         nn.init.xavier_uniform_(self.age_pred.weight)
@@ -73,16 +73,10 @@ class AgeGenPredModel(nn.Module):
         x = self.pool(x)
         x = x.view(-1, 512)  # [N, 512]
 
-        age_out = nn.BatchNorm1d(x)
-        age_out = nn.Dropout(age_out)
-        age_out = F.relu(self.fc1(age_out))  # [N, 512]
-        age_out = nn.BatchNorm1d(age_out)
+        age_out = F.relu(self.fc1(x))  # [N, 512]
         age_out = self.age_pred(age_out)  # [N, 1]
 
-        gen_out = nn.BatchNorm1d(x)
-        gen_out = nn.Dropout(gen_out)
-        gen_out = F.relu(self.fc2(gen_out))  # [N, 512]
-        gen_out = nn.BatchNorm1d(gen_out)
+        gen_out = F.relu(self.fc2(x))  # [N, 512]
         gen_out = F.softmax(self.gen_pred(gen_out), dim=1)  # [N, 2]
 
         return age_out, gen_out

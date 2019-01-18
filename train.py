@@ -29,10 +29,10 @@ def main():
     model = model.to(device)
 
     # Loss function
-    age_criterion = nn.L1Loss().to(device)
+    age_criterion = nn.MSELoss().to(device)
     gender_criterion = nn.CrossEntropyLoss().to(device)
     l1_criterion = nn.L1Loss().to(device)
-    age_loss_weight = 0.1
+    age_loss_weight = 0.01
     criterion_info = (age_criterion, gender_criterion, age_loss_weight)
 
     # Custom dataloaders
@@ -49,7 +49,7 @@ def main():
         # Decay learning rate if there is no improvement for 8 consecutive epochs, and terminate training after 20
         if epochs_since_improvement == 20:
             break
-        if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
+        if epochs_since_improvement > 0 and epochs_since_improvement % 8 == 0:
             adjust_learning_rate(optimizer, 0.1)
 
         # One epoch's training

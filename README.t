@@ -41,6 +41,7 @@ $ python train.py
 
 
 ### Demo
+下载预训练的模型 [Link](https://github.com/foamliu/Age-and-Gender/releases/download/1.0/BEST_checkpoint_.pth.tar)，执行：
 ```bash
 $ python demo.py
 ```

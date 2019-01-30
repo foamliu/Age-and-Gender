@@ -8,7 +8,6 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 
 from config import *
-from models import data_transforms
 from utils import align_face
 
 # Data augmentation and normalization for training

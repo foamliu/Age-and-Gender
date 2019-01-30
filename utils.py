@@ -1,3 +1,4 @@
+import argparse
 import math
 import os
 from datetime import datetime, timedelta
@@ -161,3 +162,24 @@ def align_face(img_fn, facial5points):
     # dst_img = warp_and_crop_face(raw, facial5points)
     dst_img = warp_and_crop_face(raw, facial5points, reference_pts=reference_5pts, crop_size=crop_size)
     return dst_img
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Train face network')
+    # general
+    parser.add_argument('--pretrained', type=bool, default=False, help='pretrained model')
+    parser.add_argument('--network', default='r50', help='specify network')
+    parser.add_argument('--end-epoch', type=int, default=50, help='training epoch size.')
+    parser.add_argument('--lr', type=float, default=0.01, help='start learning rate')
+    parser.add_argument('--lr-step', type=int, default=10, help='period of learning rate decay')
+    parser.add_argument('--optimizer', default='sgd', help='optimizer')
+    parser.add_argument('--weight-decay', type=float, default=0.0005, help='weight decay')
+    parser.add_argument('--mom', type=float, default=0.9, help='momentum')
+    parser.add_argument('--emb-size', type=int, default=512, help='embedding length')
+    parser.add_argument('--batch-size', type=int, default=512, help='batch size in each context')
+    parser.add_argument('--focal-loss', type=bool, default=False, help='focal loss')
+    parser.add_argument('--gamma', type=float, default=2.0, help='focusing parameter gamma')
+    parser.add_argument('--use-se', type=bool, default=False, help='use SEBlock')
+    parser.add_argument('--age-weight', type=float, default=0.1, help='use SEBlock')
+    args = parser.parse_args()
+    return args

@@ -4,20 +4,35 @@ from tensorboardX import SummaryWriter
 from torch import nn
 
 from data_gen import AgeGenDataset
-from models import AgeGenPredModel
+from models import resnet18, resnet34, resnet50, resnet101
 from utils import *
 
 
-def main():
-    global best_loss, epochs_since_improvement, checkpoint, start_epoch, l1_criterion
+def train_net(args):
+    torch.manual_seed(7)
+    np.random.seed(7)
     best_loss = 100000
+    torch.manual_seed(7)
+    np.random.seed(7)
+    checkpoint = None
+    start_epoch = 0
     writer = SummaryWriter()
+    epochs_since_improvement = 0
 
     # Initialize / load checkpoint
     if checkpoint is None:
-        model = AgeGenPredModel()
-        optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr,
-                                     weight_decay=5e-4)
+        if args.network == 'r100':
+            model = resnet101(args)
+        elif args.network == 'r50':
+            model = resnet50(args)
+        elif args.network == 'r34':
+            model = resnet34(args)
+        elif args.network == 'r18':
+            model = resnet18(args)
+        else:  # 'face'
+            model = resnet50(args)
+        optimizer = torch.optim.SGD(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr,
+                                    momentum=args.mom, weight_decay=args.weight_decay)
     else:
         checkpoint = torch.load(checkpoint)
         start_epoch = checkpoint['epoch'] + 1
@@ -29,11 +44,10 @@ def main():
     model = model.to(device)
 
     # Loss function
-    age_criterion = nn.L1Loss().to(device)
+    age_criterion = nn.CrossEntropyLoss().to(device)
     gender_criterion = nn.CrossEntropyLoss().to(device)
-    l1_criterion = nn.L1Loss().to(device)
-    age_loss_weight = 0.1
-    criterion_info = (age_criterion, gender_criterion, age_loss_weight)
+
+    criterion_info = (age_criterion, gender_criterion, args.age_weight)
 
     # Custom dataloaders
     train_dataset = AgeGenDataset('train')
@@ -101,7 +115,7 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
         chunk_size = inputs.size()[0]
         # Move to GPU, if available
         inputs = inputs.to(device)
-        age_true = age_true.view(-1, 1).float().to(device)  # [N, 1]
+        age_true = age_true.to(device)  # [N, 1]
         gen_true = gen_true.to(device)  # [N, 1]
 
         # Forward prop.
@@ -125,7 +139,9 @@ def train(train_loader, model, criterion_info, optimizer, epoch):
 
         # Keep track of metrics
         gen_accuracy = accuracy(gen_out, gen_true)
-        age_mae_loss = l1_criterion(age_out, age_true)
+        _, ind = age_out.topk(1, 1, True, True)
+        l1_criterion = nn.L1Loss().to(device)
+        age_mae_loss = l1_criterion(ind.view(-1, 1).float(), age_true.view(-1, 1).float())
         losses.update(loss.item(), chunk_size)
         gen_losses.update(gen_loss.item(), chunk_size)
         age_losses.update(age_loss.item(), chunk_size)
@@ -166,7 +182,7 @@ def validate(val_loader, model, criterion_info):
             chunk_size = inputs.size()[0]
             # Move to GPU, if available
             inputs = inputs.to(device)
-            age_true = age_true.view(-1, 1).float().to(device)
+            age_true = age_true.to(device)
             gen_true = gen_true.to(device)
 
             # Forward prop.
@@ -180,7 +196,9 @@ def validate(val_loader, model, criterion_info):
 
             # Keep track of metrics
             gender_accuracy = accuracy(gen_out, gen_true)
-            age_mae_loss = l1_criterion(age_out, age_true)
+            _, ind = age_out.topk(1, 1, True, True)
+            l1_criterion = nn.L1Loss().to(device)
+            age_mae_loss = l1_criterion(ind.view(-1, 1).float(), age_true.view(-1, 1).float())
             losses.update(loss.item(), chunk_size)
             gen_losses.update(gen_loss.item(), chunk_size)
             age_losses.update(age_loss.item(), chunk_size)
@@ -201,6 +219,12 @@ def validate(val_loader, model, criterion_info):
                                                                              age_mae=age_mae))
 
     return losses.avg, gen_accs.avg, age_mae.avg
+
+
+def main():
+    global args
+    args = parse_args()
+    train_net(args)
 
 
 if __name__ == '__main__':

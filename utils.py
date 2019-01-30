@@ -180,6 +180,6 @@ def parse_args():
     parser.add_argument('--focal-loss', type=bool, default=False, help='focal loss')
     parser.add_argument('--gamma', type=float, default=2.0, help='focusing parameter gamma')
     parser.add_argument('--use-se', type=bool, default=False, help='use SEBlock')
-    parser.add_argument('--age-weight', type=float, default=0.1, help='use SEBlock')
+    parser.add_argument('--age-weight', type=float, default=1.0, help='age loss weight')
     args = parser.parse_args()
     return args

@@ -60,7 +60,7 @@ def train_net(args):
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=workers,
                                                pin_memory=True)
     val_dataset = AgeGenDataset('valid')
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=workers,
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=workers,
                                              pin_memory=True)
 
     scheduler = StepLR(optimizer, step_size=args.lr_step, gamma=0.1)
@@ -75,7 +75,6 @@ def train_net(args):
                                                           criterion_info=criterion_info,
                                                           optimizer=optimizer,
                                                           epoch=epoch)
-        train_dataset.shuffle()
         writer.add_scalar('Train Loss', train_loss, epoch)
         writer.add_scalar('Train Gender Accuracy', train_gen_accs, epoch)
         writer.add_scalar('Train Age MAE', train_age_mae, epoch)

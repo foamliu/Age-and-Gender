@@ -2,8 +2,10 @@ import torch.optim
 import torch.utils.data
 from tensorboardX import SummaryWriter
 from torch import nn
+from torch.optim.lr_scheduler import StepLR
 
 from data_gen import AgeGenDataset
+from focal_loss import FocalLoss
 from models import resnet18, resnet34, resnet50, resnet101
 from utils import *
 
@@ -31,7 +33,7 @@ def train_net(args):
             model = resnet18(args)
         else:  # 'face'
             model = resnet50(args)
-        optimizer = torch.optim.SGD(params=filter(lambda p: p.requires_grad, model.parameters()), lr=lr,
+        optimizer = torch.optim.SGD(params=filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr,
                                     momentum=args.mom, weight_decay=args.weight_decay)
     else:
         checkpoint = torch.load(checkpoint)
@@ -44,8 +46,12 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    age_criterion = nn.CrossEntropyLoss().to(device)
-    gender_criterion = nn.CrossEntropyLoss().to(device)
+    if args.focal_loss:
+        age_criterion = FocalLoss(gamma=args.gamma).to(device)
+        gender_criterion = FocalLoss(gamma=args.gamma).to(device)
+    else:
+        age_criterion = nn.CrossEntropyLoss().to(device)
+        gender_criterion = nn.CrossEntropyLoss().to(device)
 
     criterion_info = (age_criterion, gender_criterion, args.age_weight)
 
@@ -57,14 +63,11 @@ def train_net(args):
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=workers,
                                              pin_memory=True)
 
+    scheduler = StepLR(optimizer, step_size=args.lr_step, gamma=0.1)
+
     # Epochs
     for epoch in range(start_epoch, epochs):
-
-        # Decay learning rate if there is no improvement for 8 consecutive epochs, and terminate training after 20
-        if epochs_since_improvement == 20:
-            break
-        if epochs_since_improvement > 0 and epochs_since_improvement % 8 == 0:
-            adjust_learning_rate(optimizer, 0.1)
+        scheduler.step()
 
         # One epoch's training
         train_loss, train_gen_accs, train_age_mae = train(train_loader=train_loader,
